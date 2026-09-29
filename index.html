@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cartiphy — The Product & The Decisions Behind It</title>
+<meta name="description" content="Cartiphy is a Nigeria-first store builder with trust built in. The product, the problems it solves, and every decision behind it.">
+<meta name="robots" content="noindex, nofollow">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cartiphy — The Product & The Decisions Behind It">
+<meta property="og:description" content="Cartiphy is a Nigeria-first store builder with trust built in. The product, the problems it solves, and every decision behind it.">
+<meta property="og:image" content="og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://cartiphy-product.vercel.app">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cartiphy — The Product & The Decisions Behind It">
+<meta name="twitter:description" content="Cartiphy is a Nigeria-first store builder with trust built in. The product, the problems it solves, and every decision behind it.">
+<meta name="twitter:image" content="og-image.jpg">
+<meta name="theme-color" content="#F7F4EF">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cpath d='M373.365 298.797C338.815 358.695 274.116 399.012 200 399.012C128.699 399.012 66.1149 361.699 30.7021 305.536L82.7246 275.501C107.717 313.742 150.907 339.012 200 339.012C251.91 339.012 297.22 310.759 321.396 268.792L373.365 298.797ZM180 60.4316C112.154 70.1364 60 128.482 60 199.012C60 212.934 62.0332 226.382 65.8174 239.075L12.8379 269.663C4.54108 247.695 0 223.884 0 199.012C0 95.3048 78.9336 10.0345 180 0V60.4316ZM220 0C321.066 10.0345 400 95.3048 400 199.012C400 221.064 396.43 242.281 389.838 262.12L336.279 231.198C338.711 220.864 340 210.088 340 199.012C340 128.482 287.846 70.1364 220 60.4316V0Z' fill='%231C1B1A'/%3E%3Cpath d='M199.5 107C220.868 107 240.542 114.247 256.203 126.415L232.58 150.038C223.12 143.699 211.743 140 199.5 140C166.639 140 140 166.639 140 199.5C140 232.361 166.639 259 199.5 259C232.361 259 259 232.361 259 199.5C259 187.935 255.7 177.141 249.991 168.008L273.717 144.282C285.202 159.693 292 178.803 292 199.5C292 250.586 250.586 292 199.5 292C148.414 292 107 250.586 107 199.5C107 148.414 148.414 107 199.5 107Z' fill='%23C1592B'/%3E%3C/svg%3E" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400..800&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --cream:#F7F4EF;
+  --paper:#FCFAF6;
+  --ink:#1C1B1A;
+  --ink-muted:#6B6764;
+  --ink-faint:#9C968F;
+  --terracotta:#C1592B;
+  --terracotta-tint:#F3E3DA;
+  --line:#E4DED3;
+  --line-strong:#D2C9BA;
+  --success:#3F6B4A;
+  --success-tint:#E4ECE5;
+  --gold:#A9781F;
+  --gold-tint:#F1E8D2;
+  --changed:#8A4FBF;
+  --changed-tint:#EDE3F5;
+
+  --radius:3px;
+  --container:1180px;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --shadow-sm:0 1px 2px rgba(28,27,26,0.04), 0 1px 1px rgba(28,27,26,0.03);
+  --shadow-md:0 4px 16px rgba(28,27,26,0.06), 0 2px 6px rgba(28,27,26,0.04);
+  --shadow-lg:0 16px 48px rgba(28,27,26,0.10), 0 6px 16px rgba(28,27,26,0.06);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth; scroll-padding-top:90px;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Inter',-apple-system,sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:700;
+  line-height:1.08;
+  letter-spacing:-0.01em;
+  margin:0;
+}
+p{margin:0;}
+a{color:inherit;}
+img{max-width:100%;display:block;}
+button{font-family:inherit;cursor:pointer;}
+:focus-visible{outline:2px solid var(--terracotta); outline-offset:2px;}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+}
+
+.wrap{max-width:var(--container); margin:0 auto; padding:0 28px;}
+@media (max-width:640px){ .wrap{padding:0 18px;} }
+
+.eyebrow{font-size:13px; color:var(--ink-faint); font-weight:500;}
+.hairline{height:1px; background:var(--line); border:none; margin:0;}
+
+/* ---------- Loader ---------- */
+#loader{
+  position:fixed; inset:0; background:var(--cream); z-index:999;
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity .6s var(--ease), visibility .6s var(--ease);
+}
+#loader.hide{opacity:0; visibility:hidden;}
+#loader .loader-mark{width:56px; height:56px; animation:spin 1.1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ---------- Scroll progress ---------- */
+#progress-ring{
+  position:fixed; top:16px; right:16px; width:34px; height:34px; z-index:60;
+  opacity:0; transition:opacity .4s var(--ease); pointer-events:none;
+}
+#progress-ring.show{opacity:1;}
+#progress-ring circle{fill:none; stroke-width:3;}
+#progress-ring .track{stroke:var(--line-strong);}
+#progress-ring .fill{stroke:var(--terracotta); stroke-linecap:butt; transform:rotate(-90deg); transform-origin:50% 50%; transition:stroke-dashoffset .1s linear;}
+@media (max-width:640px){ #progress-ring{top:auto; bottom:calc(16px + env(safe-area-inset-bottom,0px)); right:16px;} }
+
+/* ---------- Header ---------- */
+header{
+  position:sticky; top:0; z-index:50;
+  background:rgba(247,244,239,0.88);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.header-row{
+  display:flex; align-items:center; justify-content:space-between;
+  height:78px;
+}
+@media (max-width:640px){ .header-row{height:66px;} }
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none;}
+.brand svg{height:26px; width:auto;}
+@media (max-width:640px){ .brand svg{height:22px;} }
+.brand span{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:19px;}
+
+nav.desktop-nav{display:flex; gap:36px;}
+nav.desktop-nav a{
+  font-size:14.5px; font-weight:500; text-decoration:none; color:var(--ink);
+  position:relative; padding:4px 0;
+}
+nav.desktop-nav a::after{
+  content:''; position:absolute; left:0; right:0; bottom:-2px; height:1.5px;
+  background:var(--terracotta); transform:scaleX(0); transform-origin:left;
+  transition:transform .35s var(--ease);
+}
+nav.desktop-nav a:hover::after{transform:scaleX(1);}
+
+.menu-btn{
+  width:44px; height:44px; border:none; background:transparent;
+  display:flex; align-items:center; justify-content:center; position:relative; z-index:120;
+}
+.menu-btn span{
+  position:absolute; width:22px; height:1.6px; background:var(--ink);
+  transition:transform .35s var(--ease), opacity .35s var(--ease);
+}
+.menu-btn span:nth-child(1){transform:translateY(-6px);}
+.menu-btn span:nth-child(3){transform:translateY(6px);}
+.menu-btn.open span:nth-child(1){transform:rotate(45deg);}
+.menu-btn.open span:nth-child(2){opacity:0;}
+.menu-btn.open span:nth-child(3){transform:rotate(-45deg);}
+
+@media (min-width:961px){ .menu-btn{display:none;} }
+@media (max-width:960px){ nav.desktop-nav{display:none;} }
+
+#side-menu{
+  position:fixed; top:0; right:0; height:100%; width:min(360px,86vw);
+  background:var(--paper); z-index:110;
+  transform:translateX(100%);
+  transition:transform .5s var(--ease);
+  box-shadow:-8px 0 40px rgba(28,27,26,0.08);
+  padding:calc(100px + env(safe-area-inset-top,0px)) 32px calc(40px + env(safe-area-inset-bottom,0px));
+  display:flex; flex-direction:column; gap:28px;
+}
+#side-menu.open{transform:translateX(0);}
+#side-menu a{
+  font-family:'Bricolage Grotesque',sans-serif; font-size:24px; font-weight:700;
+  text-decoration:none; color:var(--ink);
+  padding:6px 0;
+}
+#overlay{
+  position:fixed; inset:0; background:rgba(28,27,26,0.25); z-index:105;
+  opacity:0; visibility:hidden; transition:opacity .4s var(--ease), visibility .4s var(--ease);
+}
+#overlay.show{opacity:1; visibility:visible;}
+
+/* ---------- Hero ---------- */
+.hero{padding:96px 0 80px; position:relative;}
+@media (max-width:640px){ .hero{padding:52px 0 48px;} }
+.hero .eyebrow{margin-bottom:22px;}
+.hero h1{font-size:clamp(36px,6vw,74px); max-width:15ch;}
+.hero p.lede{
+  margin-top:26px; max-width:52ch; font-size:19px; color:var(--ink-muted);
+}
+@media (max-width:640px){ .hero p.lede{font-size:16.5px; margin-top:18px;} }
+.hero .cta-row{display:flex; gap:18px; margin-top:40px; flex-wrap:wrap; align-items:center;}
+@media (max-width:640px){ .hero .cta-row{margin-top:28px; gap:12px;} .hero .cta-row .btn{flex:1 1 auto; justify-content:center;} }
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:14px 26px; font-size:15px; font-weight:600;
+  border-radius:var(--radius); text-decoration:none; border:1px solid transparent;
+  transition:background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .15s var(--ease);
+  min-height:48px;
+}
+.btn:active{transform:scale(0.97);}
+.btn-primary{background:var(--terracotta); color:#fff; box-shadow:var(--shadow-sm);}
+.btn-primary:hover{background:#A94A21;}
+.btn-ghost{border-color:var(--line-strong); color:var(--ink);}
+.btn-ghost:hover{border-color:var(--ink);}
+
+.hero-ring-decor{
+  position:absolute; right:-40px; top:60px; width:340px; height:340px; opacity:0.06;
+  pointer-events:none;
+}
+@media (max-width:900px){ .hero-ring-decor{display:none;} }
+
+.reveal{opacity:0; transform:translateY(16px); transition:opacity .7s var(--ease), transform .7s var(--ease);}
+.reveal.in{opacity:1; transform:translateY(0);}
+
+/* ---------- Section shell ---------- */
+section{padding:88px 0;}
+@media (max-width:640px){ section{padding:56px 0;} }
+section + section{border-top:1px solid var(--line);}
+.section-head{max-width:640px; margin-bottom:52px;}
+@media (max-width:640px){ .section-head{margin-bottom:36px;} }
+.section-head .eyebrow{margin-bottom:14px;}
+.section-head h2{font-size:clamp(26px,4vw,42px);}
+.section-head p{margin-top:16px; color:var(--ink-muted); font-size:17px; max-width:56ch;}
+@media (max-width:640px){ .section-head p{font-size:15.5px;} }
+
+/* ---------- Problems ---------- */
+.problem-list{display:flex; flex-direction:column;}
+.problem-row{
+  display:grid; grid-template-columns:1fr 1fr; gap:48px;
+  padding:34px 0; border-top:1px solid var(--line);
+  transition:background .3s var(--ease);
+}
+.problem-row:hover{background:rgba(193,89,43,0.03);}
+.problem-row:last-child{border-bottom:1px solid var(--line);}
+.problem-row h4{font-size:15px; color:var(--ink-faint); font-weight:500; font-family:'Inter',sans-serif; margin-bottom:10px;}
+.problem-row .before{font-size:17px; color:var(--ink-muted);}
+.problem-row .after p{font-size:17px;}
+.problem-row .after h4{color:var(--terracotta);}
+@media (max-width:760px){ .problem-row{grid-template-columns:1fr; gap:14px; padding:26px 0;} .problem-row .before{font-size:15.5px;} .problem-row .after p{font-size:15.5px;} }
+
+/* ---------- Journeys (stepper) ---------- */
+.journey-tabs{display:flex; gap:10px; margin-bottom:44px;}
+@media (max-width:640px){ .journey-tabs{margin-bottom:32px;} }
+.journey-tab{
+  padding:12px 20px; border:1px solid var(--line-strong); border-radius:999px;
+  background:transparent; font-size:14.5px; font-weight:600; color:var(--ink-muted);
+  transition:all .25s var(--ease); min-height:44px;
+}
+.journey-tab.active{background:var(--ink); border-color:var(--ink); color:var(--cream);}
+@media (max-width:640px){ .journey-tab{flex:1; padding:12px 14px;} .journey-tabs{width:100%;} }
+
+.stepper{position:relative; padding-left:44px;}
+@media (max-width:480px){ .stepper{padding-left:36px;} }
+.stepper::before{
+  content:''; position:absolute; left:15px; top:8px; bottom:8px; width:1px; background:var(--line-strong);
+}
+@media (max-width:480px){ .stepper::before{left:12px;} }
+.step{position:relative; padding-bottom:38px;}
+@media (max-width:480px){ .step{padding-bottom:28px;} }
+.step:last-child{padding-bottom:0;}
+.step::before{
+  content:attr(data-n); position:absolute; left:-44px; top:0; width:32px; height:32px;
+  border-radius:50%; background:var(--paper); border:1px solid var(--line-strong);
+  display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:var(--ink-muted);
+}
+@media (max-width:480px){ .step::before{left:-36px; width:26px; height:26px; font-size:11.5px;} }
+.step.current::before{background:var(--terracotta); border-color:var(--terracotta); color:#fff;}
+.step h4{font-size:19px; margin-bottom:6px;}
+@media (max-width:480px){ .step h4{font-size:16.5px;} }
+.step p{color:var(--ink-muted); font-size:15.5px; max-width:58ch;}
+@media (max-width:480px){ .step p{font-size:14.5px;} }
+.journey-photo{margin-top:20px; border-radius:8px; overflow:hidden; border:1px solid var(--line); max-width:420px; box-shadow:var(--shadow-sm);}
+.journey-view{display:none;}
+.journey-view.active{display:block;}
+
+/* ---------- Pricing calculator ---------- */
+.calc-panel{
+  border:1px solid var(--line-strong); border-radius:8px; background:var(--paper);
+  padding:44px; display:grid; grid-template-columns:280px 1fr; gap:44px;
+  box-shadow:var(--shadow-md);
+}
+@media (max-width:820px){ .calc-panel{grid-template-columns:1fr; padding:26px; gap:30px;} }
+@media (max-width:480px){ .calc-panel{padding:20px;} }
+.calc-input label{font-size:13px; color:var(--ink-faint); font-weight:500; display:block; margin-bottom:10px;}
+.calc-input input[type="range"]{width:100%; accent-color:var(--terracotta); height:32px;}
+.calc-amount{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:32px; margin-top:14px;}
+@media (max-width:480px){ .calc-amount{font-size:27px;} }
+.calc-presets{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;}
+.calc-presets button{
+  border:1px solid var(--line-strong); background:transparent; padding:9px 14px; border-radius:999px;
+  font-size:12.5px; color:var(--ink-muted); min-height:40px;
+}
+.calc-presets button.active{background:var(--ink); color:var(--cream); border-color:var(--ink);}
+
+.plan-compare{display:grid; grid-template-columns:1fr 1fr 1fr; border-top:1px solid var(--line); border-left:1px solid var(--line); border-radius:6px; overflow:hidden;}
+.plan-col{border-right:1px solid var(--line); border-bottom:1px solid var(--line); padding:22px 20px; position:relative; background:var(--cream); transition:background .3s var(--ease);}
+.plan-col.best{background:var(--terracotta-tint);}
+.plan-col .plan-name{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:18px; margin-bottom:4px;}
+.plan-col .plan-sub{font-size:12.5px; color:var(--ink-faint); margin-bottom:16px;}
+.plan-col .plan-total{font-size:26px; font-family:'Bricolage Grotesque',sans-serif; font-weight:700;}
+.plan-col .plan-total small{font-size:13px; font-family:'Inter',sans-serif; color:var(--ink-muted); display:block; margin-top:4px; font-weight:400;}
+.best-tag{position:absolute; top:-11px; right:14px; background:var(--terracotta); color:#fff; font-size:11px; font-weight:600; padding:4px 10px; border-radius:999px; box-shadow:var(--shadow-sm);}
+@media (max-width:600px){
+  .plan-compare{grid-template-columns:1fr; border-radius:8px;}
+  .plan-col{border-right:none;}
+  .best-tag{top:16px; right:16px;}
+  .plan-col.best{order:-1;}
+}
+
+/* ---------- Decision explorer ---------- */
+.filter-bar{display:flex; gap:12px; margin-bottom:32px; align-items:center; flex-wrap:nowrap;}
+.filter-bar input[type="search"]{
+  flex:0 0 auto; width:100%; max-width:280px; padding:12px 16px; border:1px solid var(--line-strong); border-radius:8px;
+  background:var(--paper); font-family:inherit; font-size:14.5px; min-height:44px;
+}
+@media (max-width:640px){ .filter-bar{flex-wrap:wrap;} .filter-bar input[type="search"]{max-width:100%; order:-1; margin-bottom:4px;} }
+.chip-scroll{display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+.chip-scroll::-webkit-scrollbar{display:none;}
+.chip{
+  padding:10px 16px; border:1px solid var(--line-strong); border-radius:999px; background:var(--paper);
+  font-size:13px; font-weight:500; color:var(--ink-muted); white-space:nowrap; flex-shrink:0; min-height:40px;
+}
+.chip.active{background:var(--ink); border-color:var(--ink); color:var(--cream);}
+
+.theme-group{margin-bottom:10px;}
+.theme-title{
+  font-family:'Bricolage Grotesque',sans-serif; font-size:15px; font-weight:700;
+  padding:16px 0 10px; color:var(--ink-muted); text-transform:none;
+}
+.decision-row{
+  border-top:1px solid var(--line); padding:18px 0; cursor:pointer;
+  border-left:3px solid transparent; padding-left:12px; margin-left:-12px;
+  transition:border-color .3s var(--ease), background .3s var(--ease);
+}
+.decision-row:hover{background:rgba(28,27,26,0.015);}
+.decision-row.is-changed{border-left-color:var(--changed);}
+.decision-row:last-child{border-bottom:1px solid var(--line);}
+.decision-head{display:flex; justify-content:space-between; align-items:center; gap:20px;}
+.decision-head .d-title{font-size:16.5px; font-weight:500;}
+@media (max-width:480px){ .decision-head .d-title{font-size:15px;} .decision-head{gap:10px;} }
+.decision-meta{display:flex; align-items:center; gap:12px; flex-shrink:0;}
+.tag{font-size:11.5px; font-weight:600; padding:4px 11px; border-radius:999px; white-space:nowrap;}
+.tag-locked{background:var(--success-tint); color:var(--success);}
+.tag-open{background:var(--gold-tint); color:var(--gold);}
+.tag-changed{background:var(--changed-tint); color:var(--changed);}
+.chevron{transition:transform .3s var(--ease); color:var(--ink-faint); flex-shrink:0;}
+.decision-row.open .chevron{transform:rotate(180deg);}
+.decision-body{
+  max-height:0; overflow:hidden; transition:max-height .4s var(--ease);
+}
+.decision-row.open .decision-body{max-height:240px;}
+.decision-body-inner{padding:14px 0 4px; font-size:15px; color:var(--ink-muted); max-width:72ch;}
+@media (max-width:480px){ .decision-body-inner{font-size:14px;} }
+.decision-row.hidden{display:none;}
+
+/* ---------- Roadmap ---------- */
+.roadmap{position:relative; padding-left:44px;}
+@media (max-width:480px){ .roadmap{padding-left:36px;} }
+.roadmap::before{content:''; position:absolute; left:15px; top:8px; bottom:8px; width:1px; background:var(--line-strong);}
+@media (max-width:480px){ .roadmap::before{left:12px;} }
+.phase{position:relative; padding-bottom:34px;}
+@media (max-width:480px){ .phase{padding-bottom:26px;} }
+.phase:last-child{padding-bottom:0;}
+.phase::before{
+  content:attr(data-n); position:absolute; left:-44px; top:0; width:32px; height:32px;
+  border-radius:50%; background:var(--paper); border:1px solid var(--line-strong);
+  display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--ink-muted);
+}
+@media (max-width:480px){ .phase::before{left:-36px; width:26px; height:26px; font-size:10.5px;} }
+.phase h4{font-size:17px; margin-bottom:4px;}
+@media (max-width:480px){ .phase h4{font-size:15.5px;} }
+.phase p{color:var(--ink-muted); font-size:14.5px;}
+@media (max-width:480px){ .phase p{font-size:13.5px;} }
+
+/* ---------- Enforcement ladder ---------- */
+.ladder{display:flex; flex-direction:column; border:1px solid var(--line); border-radius:8px; overflow:hidden; box-shadow:var(--shadow-sm);}
+.ladder-step{
+  display:grid; grid-template-columns:56px 1fr; gap:20px; padding:22px 24px;
+  border-bottom:1px solid var(--line); align-items:center;
+}
+@media (max-width:480px){ .ladder-step{grid-template-columns:40px 1fr; gap:14px; padding:18px;} }
+.ladder-step:last-child{border-bottom:none;}
+.ladder-num{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:22px; color:var(--ink-faint);}
+@media (max-width:480px){ .ladder-num{font-size:17px;} }
+.ladder-step.fast .ladder-num{color:var(--terracotta);}
+.ladder-step h4{font-size:16.5px; margin-bottom:3px;}
+@media (max-width:480px){ .ladder-step h4{font-size:15px;} }
+.ladder-step p{font-size:14.5px; color:var(--ink-muted);}
+@media (max-width:480px){ .ladder-step p{font-size:13.5px;} }
+
+/* ---------- Photo band ---------- */
+.photo-band{display:grid; grid-template-columns:1.3fr 1fr; gap:2px;}
+.photo-band .ph{position:relative; overflow:hidden; aspect-ratio:4/3; background:var(--line);}
+.photo-band img{width:100%; height:100%; object-fit:cover; transition:transform .6s var(--ease);}
+.photo-band .ph:hover img{transform:scale(1.04);}
+@media (max-width:760px){ .photo-band{grid-template-columns:1fr;} }
+
+.section-photo{border-radius:10px; overflow:hidden; margin-top:40px; box-shadow:var(--shadow-md); aspect-ratio:16/8; background:var(--line);}
+.section-photo img{width:100%; height:100%; object-fit:cover;}
+@media (max-width:640px){ .section-photo{aspect-ratio:4/3; margin-top:28px;} }
+
+/* ---------- Footer ---------- */
+footer{padding:60px 0 50px;}
+@media (max-width:640px){ footer{padding:44px 0 calc(36px + env(safe-area-inset-bottom,0px));} }
+.footer-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+footer .brand span{font-size:16px;}
+.footer-note{font-size:13px; color:var(--ink-faint);}
+
+/* ---------- Touch target safety net ---------- */
+@media (hover:none){
+  .btn, .chip, .journey-tab, .calc-presets button{ min-height:44px; }
+}
+
+</style>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true">
+  <svg class="loader-mark" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M373.365 298.797C338.815 358.695 274.116 399.012 200 399.012C128.699 399.012 66.1149 361.699 30.7021 305.536L82.7246 275.501C107.717 313.742 150.907 339.012 200 339.012C251.91 339.012 297.22 310.759 321.396 268.792L373.365 298.797ZM180 60.4316C112.154 70.1364 60 128.482 60 199.012C60 212.934 62.0332 226.382 65.8174 239.075L12.8379 269.663C4.54108 247.695 0 223.884 0 199.012C0 95.3048 78.9336 10.0345 180 0V60.4316ZM220 0C321.066 10.0345 400 95.3048 400 199.012C400 221.064 396.43 242.281 389.838 262.12L336.279 231.198C338.711 220.864 340 210.088 340 199.012C340 128.482 287.846 70.1364 220 60.4316V0Z" fill="#1C1B1A"/>
+    <path d="M199.5 107C220.868 107 240.542 114.247 256.203 126.415L232.58 150.038C223.12 143.699 211.743 140 199.5 140C166.639 140 140 166.639 140 199.5C140 232.361 166.639 259 199.5 259C232.361 259 259 232.361 259 199.5C259 187.935 255.7 177.141 249.991 168.008L273.717 144.282C285.202 159.693 292 178.803 292 199.5C292 250.586 250.586 292 199.5 292C148.414 292 107 250.586 107 199.5C107 148.414 148.414 107 199.5 107Z" fill="#C1592B"/>
+  </svg>
+</div>
+
+<svg id="progress-ring" viewBox="0 0 40 40">
+  <circle class="track" cx="20" cy="20" r="17"></circle>
+  <circle class="fill" cx="20" cy="20" r="17" stroke-dasharray="106.8" stroke-dashoffset="106.8"></circle>
+</svg>
+
+<header>
+  <div class="wrap header-row">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M373.365 298.797C338.815 358.695 274.116 399.012 200 399.012C128.699 399.012 66.1149 361.699 30.7021 305.536L82.7246 275.501C107.717 313.742 150.907 339.012 200 339.012C251.91 339.012 297.22 310.759 321.396 268.792L373.365 298.797ZM180 60.4316C112.154 70.1364 60 128.482 60 199.012C60 212.934 62.0332 226.382 65.8174 239.075L12.8379 269.663C4.54108 247.695 0 223.884 0 199.012C0 95.3048 78.9336 10.0345 180 0V60.4316ZM220 0C321.066 10.0345 400 95.3048 400 199.012C400 221.064 396.43 242.281 389.838 262.12L336.279 231.198C338.711 220.864 340 210.088 340 199.012C340 128.482 287.846 70.1364 220 60.4316V0Z" fill="#1C1B1A"/><path d="M199.5 107C220.868 107 240.542 114.247 256.203 126.415L232.58 150.038C223.12 143.699 211.743 140 199.5 140C166.639 140 140 166.639 140 199.5C140 232.361 166.639 259 199.5 259C232.361 259 259 232.361 259 199.5C259 187.935 255.7 177.141 249.991 168.008L273.717 144.282C285.202 159.693 292 178.803 292 199.5C292 250.586 250.586 292 199.5 292C148.414 292 107 250.586 107 199.5C107 148.414 148.414 107 199.5 107Z" fill="#C1592B"/></svg>
+      <span>Cartiphy</span>
+    </a>
+    <nav class="desktop-nav">
+      <a href="#problems">Problems</a>
+      <a href="#journeys">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#decisions">Decisions</a>
+      <a href="#roadmap">Roadmap</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div id="overlay"></div>
+<nav id="side-menu">
+  <a href="#problems">Problems</a>
+  <a href="#journeys">How it works</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#decisions">Decisions</a>
+  <a href="#roadmap">Roadmap</a>
+</nav>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Blueprint v1 — internal</p>
+      <h1>A Nigeria-first store builder, built with trust in.</h1>
+      <p class="lede">Cartiphy lets a Nigerian seller open a real online store in minutes — Naira-first, Flutterwave-native, and designed around how commerce actually happens here. This is the product, the problems it answers, and the reasoning behind every decision made to get here.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#problems">See the product</a>
+        <a class="btn btn-ghost" href="#decisions">Browse the decisions</a>
+      </div>
+    </div>
+    <svg class="hero-ring-decor" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M373.365 298.797C338.815 358.695 274.116 399.012 200 399.012C128.699 399.012 66.1149 361.699 30.7021 305.536L82.7246 275.501C107.717 313.742 150.907 339.012 200 339.012C251.91 339.012 297.22 310.759 321.396 268.792L373.365 298.797ZM180 60.4316C112.154 70.1364 60 128.482 60 199.012C60 212.934 62.0332 226.382 65.8174 239.075L12.8379 269.663C4.54108 247.695 0 223.884 0 199.012C0 95.3048 78.9336 10.0345 180 0V60.4316ZM220 0C321.066 10.0345 400 95.3048 400 199.012C400 221.064 396.43 242.281 389.838 262.12L336.279 231.198C338.711 220.864 340 210.088 340 199.012C340 128.482 287.846 70.1364 220 60.4316V0Z" fill="#1C1B1A"/></svg>
+  </section>
+
+  <!-- ===================== PROBLEMS ===================== -->
+  <section id="problems">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Why Cartiphy exists</p>
+        <h2>The gap between how Nigerians sell and what tools give them</h2>
+        <p>Six problems, and how the product answers each one.</p>
+      </div>
+      <div class="problem-list reveal">
+        <div class="problem-row">
+          <div class="before"><h4>Today</h4>Most online selling happens in WhatsApp and Instagram DMs — no records, no proof, buyers pay first and hope.</div>
+          <div class="after"><h4>Cartiphy</h4><p>Every sale runs through a real checkout: a payment record, an order history, and a dispute process.</p></div>
+        </div>
+        <div class="problem-row">
+          <div class="before"><h4>Today</h4>Global store builders price in dollars and assume foreign payment rails and shipping carriers.</div>
+          <div class="after"><h4>Cartiphy</h4><p>Naira-first, Flutterwave-native, with deliberately simple features — flat products, seller-arranged delivery.</p></div>
+        </div>
+        <div class="problem-row">
+          <div class="before"><h4>Today</h4>A proper store usually means hiring a developer or an agency.</div>
+          <div class="after"><h4>Cartiphy</h4><p>Sellers self-serve: answer a few questions, get a polished, animated store on their own link.</p></div>
+        </div>
+        <div class="problem-row">
+          <div class="before"><h4>Today</h4>A seller has no way to prove they're trustworthy, and a shopper has no way to check.</div>
+          <div class="after"><h4>Cartiphy</h4><p>Verification tiers, a visible badge, and reviews that only real buyers can leave.</p></div>
+        </div>
+        <div class="problem-row">
+          <div class="before"><h4>Today</h4>Shoppers have nowhere to find stores they can trust.</div>
+          <div class="after"><h4>Cartiphy</h4><p>A discovery page that only surfaces verified sellers, ranked by real ratings.</p></div>
+        </div>
+        <div class="problem-row">
+          <div class="before"><h4>Today</h4>Order updates get lost — email goes unread.</div>
+          <div class="after"><h4>Cartiphy</h4><p>SMS for order events, email reserved for account and formal matters.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="photo-band">
+    <div class="ph"><img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1200&q=80" alt="Entrepreneur photographing product inventory for an online store" loading="lazy"></div>
+    <div class="ph"><img src="https://images.unsplash.com/photo-1585790050230-5dd28404ccc9?auto=format&fit=crop&w=900&q=80" alt="Person completing a mobile checkout on a smartphone" loading="lazy"></div>
+  </div>
+  <p class="wrap" style="font-size:11.5px;color:var(--ink-faint);padding-top:8px;">Placeholder photography — swap via the two &lt;img&gt; src attributes above. See notes at end of this response for curated, free-to-use replacement links.</p>
+
+  <!-- ===================== JOURNEYS ===================== -->
+  <section id="journeys">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">How it works</p>
+        <h2>Two journeys, one platform</h2>
+        <p>What a vendor does to open a store, and what a customer does to buy from one.</p>
+      </div>
+
+      <div class="journey-tabs reveal">
+        <button class="journey-tab active" data-view="vendor">Vendor journey</button>
+        <button class="journey-tab" data-view="customer">Customer journey</button>
+      </div>
+
+      <div class="journey-view active" id="view-vendor">
+        <div class="stepper">
+          <div class="step current" data-n="1"><h4>Sign up and accept the rules</h4><p>Vendor creates an account and accepts the Marketplace Rules and Terms of Service.</p></div>
+          <div class="step" data-n="2"><h4>Answer a few questions</h4><p>Store name, category, single or multiple products, and a style preference. Cartiphy matches a template.</p></div>
+          <div class="step" data-n="3"><h4>Add products</h4><p>One by one, or by spreadsheet upload for larger catalogues.</p></div>
+          <div class="step" data-n="4"><h4>Verify to get paid</h4><p>Bank account and phone verification unlocks live payments and appearance in discovery.</p></div>
+          <div class="step" data-n="5"><h4>Share the store link</h4><p>Orders arrive in the dashboard and by SMS as they come in.</p></div>
+          <div class="step" data-n="6"><h4>Deliver and get paid</h4><p>Arrange delivery directly, mark the order out for delivery, and receive payment straight from Flutterwave.</p></div>
+        </div>
+      </div>
+
+      <div class="journey-view" id="view-customer">
+        <div class="stepper">
+          <div class="step current" data-n="1"><h4>Find a store</h4><p>By direct link, or through Cartiphy's discovery page of verified sellers.</p></div>
+          <div class="step" data-n="2"><h4>Browse and ask</h4><p>Add to cart, or tap "Ask a question" to chat with the vendor on WhatsApp before buying.</p></div>
+          <div class="step" data-n="3"><h4>Pay at checkout</h4><p>Secure payment through Flutterwave. The vendor's contact appears right after, for delivery coordination.</p></div>
+          <div class="step" data-n="4"><h4>Confirm delivery</h4><p>One tap from an SMS link — or it auto-confirms after 72 hours.</p></div>
+          <div class="step" data-n="5"><h4>Review or dispute</h4><p>Leave a verified review, or raise a dispute within 7 days.</p></div>
+        </div>
+      </div>
+      <div class="section-photo reveal"><img src="https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=1400&q=80" alt="Small business owner packaging an order for delivery" loading="lazy"></div>
+    </div>
+  </section>
+
+  <!-- ===================== PRICING ===================== -->
+  <section id="pricing">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">What it costs a vendor</p>
+        <h2>Three plans, priced so growth is rewarded</h2>
+        <p>Every vendor starts with 14 days of Venture features. After that: subscribe, or fall back to Prime with all data intact. Move the slider to see the real cost at different sales levels.</p>
+      </div>
+
+      <div class="calc-panel reveal">
+        <div class="calc-input">
+          <label for="salesRange">Monthly sales (₦)</label>
+          <input type="range" id="salesRange" min="50000" max="4000000" step="10000" value="400000">
+          <div class="calc-amount" id="salesAmount">₦400,000</div>
+          <div class="calc-presets">
+            <button data-val="200000">₦200k</button>
+            <button data-val="800000" class="active">₦800k</button>
+            <button data-val="1600000">₦1.6M</button>
+            <button data-val="3000000">₦3M</button>
+          </div>
+        </div>
+        <div>
+          <div class="plan-compare" id="planCompare">
+            <div class="plan-col" data-plan="prime">
+              <div class="plan-name">Prime</div>
+              <div class="plan-sub">Free · 4% commission</div>
+              <div class="plan-total" id="total-prime">—</div>
+            </div>
+            <div class="plan-col" data-plan="venture">
+              <div class="plan-name">Venture</div>
+              <div class="plan-sub">₦12,000/mo · 2% commission</div>
+              <div class="plan-total" id="total-venture">—</div>
+            </div>
+            <div class="plan-col" data-plan="apex">
+              <div class="plan-name">Apex</div>
+              <div class="plan-sub">₦28,000/mo · 1% commission</div>
+              <div class="plan-total" id="total-apex">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DECISION EXPLORER ===================== -->
+  <section id="decisions">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">The decision log</p>
+        <h2>Every call made, and why</h2>
+        <p>Search or filter by theme. Each row expands to the reasoning behind it. Purple-tagged rows are decisions that were tried, then changed.</p>
+      </div>
+
+      <div class="filter-bar reveal">
+        <input type="search" id="decisionSearch" placeholder="Search a decision…">
+        <div class="chip-scroll" id="chipScroll">
+          <button class="chip active" data-theme="all">All themes</button>
+        </div>
+      </div>
+
+      <div id="decisionList"></div>
+    </div>
+  </section>
+
+  <!-- ===================== ENFORCEMENT ===================== -->
+  <section id="enforcement">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Trust in practice</p>
+        <h2>How Cartiphy responds when rules are broken</h2>
+        <p>A vendor rule is only real if breaking it has a visible, fair consequence. Circumvention (taking Cartiphy-originated buyers off-platform to dodge the fee) is handled on a graduated ladder. Genuine fraud skips straight to review.</p>
+      </div>
+      <div class="ladder reveal">
+        <div class="ladder-step"><div class="ladder-num">01</div><div><h4>Educational notice</h4><p>First instance — a friendly, specific note on what to change.</p></div></div>
+        <div class="ladder-step"><div class="ladder-num">02</div><div><h4>Formal warning</h4><p>Sent by email and kept as a record.</p></div></div>
+        <div class="ladder-step"><div class="ladder-num">03</div><div><h4>Removed from discovery</h4><p>30 days, store keeps working, reinstated automatically.</p></div></div>
+        <div class="ladder-step"><div class="ladder-num">04</div><div><h4>Store suspended</h4><p>No new orders; existing orders must still be fulfilled.</p></div></div>
+        <div class="ladder-step"><div class="ladder-num">05</div><div><h4>Permanent ban</h4><p>Bank account and phone number blocked from re-registering.</p></div></div>
+        <div class="ladder-step fast"><div class="ladder-num">FT</div><div><h4>Fast track — fraud</h4><p>Non-delivery, fake goods, or scam reports move straight to suspension pending review.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ROADMAP ===================== -->
+  <section id="roadmap">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Where this is going</p>
+        <h2>Built in tested stages, not one leap</h2>
+        <p>Each stage ends with a working, checkpointed slice before the next begins.</p>
+      </div>
+      <div class="roadmap reveal">
+        <div class="phase" data-n="0"><h4>Foundations</h4><p>Security baseline, environments, core schema.</p></div>
+        <div class="phase" data-n="1"><h4>Vendor & store core</h4><p>Sign-up, onboarding, product catalogue.</p></div>
+        <div class="phase" data-n="2"><h4>Storefront & cart</h4><p>Live templates, server-rendered pages, cart.</p></div>
+        <div class="phase" data-n="3"><h4>Payments</h4><p>Verification, checkout, webhooks, stock integrity.</p></div>
+        <div class="phase" data-n="4"><h4>Order lifecycle & trust</h4><p>Status tracking, confirmations, disputes, reviews.</p></div>
+        <div class="phase" data-n="5"><h4>Notifications</h4><p>SMS and email across every order event.</p></div>
+        <div class="phase" data-n="6"><h4>Discovery & insights</h4><p>Public browsing, search, vendor analytics.</p></div>
+        <div class="phase" data-n="7"><h4>Monetization</h4><p>Billing, trials, discount codes.</p></div>
+        <div class="phase" data-n="8"><h4>Moderation & admin</h4><p>The full admin panel and enforcement tooling.</p></div>
+        <div class="phase" data-n="9"><h4>Launch readiness</h4><p>Legal review, security pass, soft launch.</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-row">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:20px;"><path d="M373.365 298.797C338.815 358.695 274.116 399.012 200 399.012C128.699 399.012 66.1149 361.699 30.7021 305.536L82.7246 275.501C107.717 313.742 150.907 339.012 200 339.012C251.91 339.012 297.22 310.759 321.396 268.792L373.365 298.797ZM180 60.4316C112.154 70.1364 60 128.482 60 199.012C60 212.934 62.0332 226.382 65.8174 239.075L12.8379 269.663C4.54108 247.695 0 223.884 0 199.012C0 95.3048 78.9336 10.0345 180 0V60.4316ZM220 0C321.066 10.0345 400 95.3048 400 199.012C400 221.064 396.43 242.281 389.838 262.12L336.279 231.198C338.711 220.864 340 210.088 340 199.012C340 128.482 287.846 70.1364 220 60.4316V0Z" fill="#1C1B1A"/><path d="M199.5 107C220.868 107 240.542 114.247 256.203 126.415L232.58 150.038C223.12 143.699 211.743 140 199.5 140C166.639 140 140 166.639 140 199.5C140 232.361 166.639 259 199.5 259C232.361 259 259 232.361 259 199.5C259 187.935 255.7 177.141 249.991 168.008L273.717 144.282C285.202 159.693 292 178.803 292 199.5C292 250.586 250.586 292 199.5 292C148.414 292 107 250.586 107 199.5C107 148.414 148.414 107 199.5 107Z" fill="#C1592B"/></svg>
+      <span>Cartiphy</span>
+    </a>
+    <p class="footer-note">Blueprint v1 — internal reference, not for public distribution.</p>
+  </div>
+</footer>
+
+<script>
+// ---------- Loader ----------
+window.addEventListener('load', ()=>{
+  setTimeout(()=>document.getElementById('loader').classList.add('hide'), 350);
+});
+
+// ---------- Side menu ----------
+const menuBtn = document.getElementById('menuBtn');
+const sideMenu = document.getElementById('side-menu');
+const overlay = document.getElementById('overlay');
+function closeMenu(){
+  menuBtn.classList.remove('open'); menuBtn.setAttribute('aria-expanded','false');
+  sideMenu.classList.remove('open'); overlay.classList.remove('show');
+}
+menuBtn.addEventListener('click', ()=>{
+  const isOpen = sideMenu.classList.toggle('open');
+  menuBtn.classList.toggle('open', isOpen);
+  menuBtn.setAttribute('aria-expanded', isOpen);
+  overlay.classList.toggle('show', isOpen);
+});
+overlay.addEventListener('click', closeMenu);
+sideMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click', closeMenu));
+
+// ---------- Scroll progress ring ----------
+const ring = document.getElementById('progress-ring');
+const fillCircle = ring.querySelector('.fill');
+const CIRC = 106.8;
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const scrolled = h.scrollTop;
+  const max = h.scrollHeight - h.clientHeight;
+  const pct = max > 0 ? scrolled / max : 0;
+  fillCircle.style.strokeDashoffset = CIRC - (CIRC * pct);
+  ring.classList.toggle('show', scrolled > 200);
+});
+
+// ---------- Reveal on scroll ----------
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+},{threshold:0.12});
+revealEls.forEach(el=>io.observe(el));
+
+// ---------- Journey tabs ----------
+document.querySelectorAll('.journey-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.journey-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.journey-view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-'+tab.dataset.view).classList.add('active');
+  });
+});
+
+// ---------- Pricing calculator ----------
+const salesRange = document.getElementById('salesRange');
+const salesAmount = document.getElementById('salesAmount');
+const fwFeeRate = 0.0215;
+const plans = {
+  prime:   {sub:0,     comm:0.04},
+  venture: {sub:12000, comm:0.02},
+  apex:    {sub:28000, comm:0.01}
+};
+function fmt(n){ return '₦' + Math.round(n).toLocaleString('en-NG'); }
+function updateCalc(){
+  const sales = parseInt(salesRange.value,10);
+  salesAmount.textContent = fmt(sales);
+  const totals = {};
+  Object.keys(plans).forEach(k=>{
+    const p = plans[k];
+    const total = p.sub + sales*p.comm + sales*fwFeeRate;
+    totals[k]=total;
+    document.getElementById('total-'+k).innerHTML = fmt(total) + '<small>Cartiphy + Flutterwave fees / month</small>';
+  });
+  let best = Object.keys(totals).reduce((a,b)=> totals[a]<totals[b]?a:b);
+  document.querySelectorAll('.plan-col').forEach(col=>{
+    col.classList.remove('best');
+    const existingTag = col.querySelector('.best-tag');
+    if(existingTag) existingTag.remove();
+  });
+  const bestCol = document.querySelector('.plan-col[data-plan="'+best+'"]');
+  bestCol.classList.add('best');
+  const tag = document.createElement('span');
+  tag.className='best-tag'; tag.textContent='Cheapest here';
+  bestCol.appendChild(tag);
+}
+salesRange.addEventListener('input', ()=>{
+  document.querySelectorAll('.calc-presets button').forEach(b=>b.classList.remove('active'));
+  updateCalc();
+});
+document.querySelectorAll('.calc-presets button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    salesRange.value = btn.dataset.val;
+    document.querySelectorAll('.calc-presets button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    updateCalc();
+  });
+});
+updateCalc();
+
+// ---------- Decision data ----------
+const decisions = [
+{theme:"Vision & scope", title:"A focused Nigerian store builder, not a Shopify clone", status:"Locked", why:"A full global competitor isn't realistic to build alone. The real gap is a working backend for stores, paired with local payments and trust — not matching Shopify feature-for-feature."},
+{theme:"Vision & scope", title:"Standalone brand, separate codebase", status:"Locked", why:"Reuses the template-selection idea from the founder's existing AI website builder, but as a distinct product and brand, built from scratch."},
+{theme:"Vision & scope", title:"Nigeria-first, Naira only", status:"Locked", why:"Multi-currency and pan-African support multiply the work. Focus on one market first."},
+{theme:"Vision & scope", title:"No custom CMS", status:"Locked", why:"Commerce data is structured data, not content. A database schema plus a dashboard covers it; a CMS would consume the budget solving an already-solved problem."},
+{theme:"Vision & scope", title:"Build in small, tested slices", status:"Locked", why:"An AI-assisted build with no ability to hand-debug code needs a passing checkpoint at the end of every phase, not one large generation."},
+{theme:"People & accounts", title:"Three roles: Vendor, Customer, Platform Admin", status:"Locked", why:"Every extra role (staff accounts, multi-store owners, affiliates) multiplies auth and permission work. Staff accounts return later as an Apex feature."},
+{theme:"People & accounts", title:"Customer accounts are platform-wide", status:"Locked", why:"One account works across every store, building real cross-store history and a foundation for discovery — worth the extra setup over per-store accounts."},
+{theme:"People & accounts", title:"Guest checkout quietly creates a lightweight record", status:"Locked", why:"Forcing sign-up before purchase kills conversion. A silent record lets order history build up; a one-time code later merges it into a real account."},
+{theme:"Store building", title:"Stores are chosen from a template library, not generated per-store", status:"Locked", why:"Generating a full store per vendor is expensive and unreliable. Selecting from a curated, commerce-ready library is nearly free and already premium-quality."},
+{theme:"Store building", title:"One shared backend behind every template", status:"Locked", why:"Every template implements the same slots — product grid, product page, cart, checkout, confirmation — so one backend serves an unlimited number of templates."},
+{theme:"Store building", title:"3–5 templates at launch", status:"Locked", why:"Making a template properly commerce-ready is real work. Better to launch a few excellent ones than many half-finished ones."},
+{theme:"Store building", title:"Plain HTML, CSS and JavaScript for templates", status:"Locked", why:"Matches the founder's own strongest skill, so template code can be read and sanity-checked directly, even while the platform itself runs on Next.js."},
+{theme:"Store building", title:"Templates are server-rendered, not client-rendered", status:"Locked", why:"Client-side rendering leaves search engines and WhatsApp link previews looking at an empty shell — a real cost in a market where links get shared constantly. Server rendering fixes both."},
+{theme:"Store building", title:"Cartiphy owns checkout, confirmation and the trust badge inside every template", status:"Locked", why:"Buyers should see identical trust cues everywhere, no matter which template a vendor picked. Everything else stays template-styled."},
+{theme:"Store building", title:"Subdomains, with naming rules", status:"Locked", why:"A store at name.cartiphy.com feels like a real store. Rules (lowercase, letters/numbers/hyphens, length limits, reserved words) prevent impersonation and mess."},
+{theme:"Catalog", title:"Flat products — no built-in variant system", status:"Locked", why:"Size/colour variant systems add real complexity. Vendors list each variant as a separate product for now."},
+{theme:"Catalog", title:"Both single-item upload and CSV bulk upload", status:"Locked", why:"Informal sellers need simple manual entry; established sellers with large catalogues need spreadsheet import. Bulk upload is a paid-plan feature."},
+{theme:"Catalog", title:"Ten launch categories; a Services category deferred", status:"Locked", why:"Bookable services need time-slot logic instead of stock — a genuinely different data model, kept for later."},
+{theme:"Payments", title:"Flutterwave, via sub-accounts with direct settlement", status:"Locked", why:"Money reaches a vendor's own bank account directly, rather than Cartiphy holding and manually paying it out — avoiding the cash-flow and liability risk of pooled funds."},
+{theme:"Payments", title:"No escrow at launch", status:"Changed", why:"Two earlier decisions turned out to contradict each other — split payments and an escrow-style delayed payout can't coexist without holding customer funds directly, which raises real regulatory questions. Trust instead rests on verification, reviews, and enforcement. Escrow may return later, after legal and provider review."},
+{theme:"Payments", title:"WhatsApp is for questions, never for checkout", status:"Locked", why:"Paying off-platform loses every protection Cartiphy exists to offer — no record, no dispute path, easy to scam. Chat stays for questions and delivery coordination."},
+{theme:"Payments", title:"Seller bears the Flutterwave processing fee", status:"Locked", why:"The standard approach for seller-facing platforms."},
+{theme:"Payments", title:"Vendor sets a flat delivery fee at checkout", status:"Locked", why:"Keeping the full payment — item plus delivery — inside checkout keeps it inside the platform's protections. A flat fee (zero for free delivery) is simple for v1; zone-based fees come later."},
+{theme:"Payments", title:"Money stored as integer kobo throughout", status:"Locked", why:"Avoids rounding errors that come with decimal currency values."},
+{theme:"Trust & enforcement", title:"Three verification tiers", status:"Locked", why:"Building a store stays frictionless; accepting real payments requires a verified bank account and phone; an optional business registration earns a further trust badge."},
+{theme:"Trust & enforcement", title:"Reviews only from verified, completed purchases", status:"Locked", why:"Stops fake reviews and directly rewards selling on-platform rather than off it."},
+{theme:"Trust & enforcement", title:"Buyer confirms delivery; auto-confirms after 72 hours", status:"Locked", why:"Letting a vendor self-report delivery is an easy thing to abuse. Confirmation now unlocks a verified review and closes the window for a dispute."},
+{theme:"Trust & enforcement", title:"7-day dispute window, auto-flagged at day 5 if unresolved", status:"Locked", why:"Balances giving buyers a fair chance to raise an issue against giving vendors reasonable certainty."},
+{theme:"Trust & enforcement", title:"Refunds are vendor-initiated through Flutterwave", status:"Locked", why:"Cartiphy is not the merchant of record and, without pooled funds, has no money of its own to refund from."},
+{theme:"Trust & enforcement", title:"One trial per unique phone number and bank account", status:"Locked", why:"An email address is free to create; a real Nigerian bank account and phone number are genuine friction, closing most of the obvious trial-abuse path."},
+{theme:"Trust & enforcement", title:"\u201CAsk a question\u201D WhatsApp button before purchase, full contact after payment", status:"Locked", why:"Nigerian buyers expect to chat before paying, so hiding numbers would hurt real conversion. Add-to-cart stays the primary action throughout."},
+{theme:"Trust & enforcement", title:"A narrow, clearly stated anti-circumvention rule", status:"Locked", why:"Only listing contact/bank details or directing a Cartiphy-originated buyer off-platform is prohibited. A vendor's own existing customers, and post-purchase delivery chats, are always fine — and can't realistically be policed anyway."},
+{theme:"Trust & enforcement", title:"Prevent first, punish second", status:"Locked", why:"A friendly, specific block at the moment a rule would be broken stops most violations before they happen, cheaper than chasing them after the fact."},
+{theme:"Trust & enforcement", title:"Flags go to a human review queue, never an automatic ban", status:"Locked", why:"Behavioural signals are probabilistic, not proof. A wrongful ban costs the platform more trust than a missed violation does."},
+{theme:"Trust & enforcement", title:"Enforcement has no money penalties", status:"Changed", why:"Direct settlement means Cartiphy never holds vendor funds, so payout holds — an earlier idea — aren't possible. Enforcement works through discovery removal, suspension and bans instead."},
+{theme:"Trust & enforcement", title:"Marketing never promises guaranteed buyer protection", status:"Changed", why:"Without escrow, that language overpromises. The honest claim is verified sellers, a payment record, verified reviews, and a working dispute process."},
+{theme:"Notifications", title:"SMS for order events, WhatsApp added once approved", status:"Locked", why:"SMS works immediately. WhatsApp Business API needs Meta approval, which takes real calendar time."},
+{theme:"Notifications", title:"Email reserved for account matters and formal records", status:"Locked", why:"Email is the right channel for anything that needs a searchable paper trail — receipts, security, formal notices."},
+{theme:"Notifications", title:"Buyer-facing order messages are never gated by plan", status:"Locked", why:"They're part of the trust flow itself, not a premium convenience."},
+{theme:"Discovery", title:"A platform-wide discovery page", status:"Locked", why:"Turns Cartiphy from a hosting tool into a platform with its own gravity — buyers can find sellers they've never heard of."},
+{theme:"Discovery", title:"Only Tier 1+ verified vendors are surfaced", status:"Locked", why:"Being recommended by Cartiphy is an implicit endorsement, so a quality floor applies."},
+{theme:"Discovery", title:"Ranking blends verified-and-rated with newest stores", status:"Locked", why:"A strict rating-only sort would leave the homepage empty or stale in the early days. Blending in newest stores keeps it alive while ratings accumulate."},
+{theme:"Discovery", title:"No pay-to-rank", status:"Locked", why:"A paid boost would directly undercut the trust promise discovery is built on."},
+{theme:"Money model", title:"Subscription plus a per-sale commission", status:"Locked", why:"Subscription revenue can't be avoided by moving sales off-platform; commission scales naturally with a vendor's success."},
+{theme:"Money model", title:"Prime, Venture and Apex", status:"Locked", why:"Distinct, non-generic plan names rather than the usual Starter / Growth / Business."},
+{theme:"Money model", title:"Prime is a permanent free tier", status:"Locked", why:"Lowers the barrier for informal sellers to join at all, and gives a graceful landing spot when a subscription lapses — with all data kept intact."},
+{theme:"Money model", title:"Everyone gets 14 days of Venture features first", status:"Locked", why:"Lets every new vendor feel the better tier before choosing, and pairs with the trial-abuse protection above."},
+{theme:"Money model", title:"Commission still applies during the trial", status:"Locked", why:"Keeps the platform earning even in the free trial period, and makes the post-trial change in cost fully visible rather than a surprise."},
+{theme:"Money model", title:"Prime commission set at 4%, not 5%", status:"Changed", why:"An initial 5% made Prime notably more expensive than competitors and raised the temptation to sell off-platform to avoid it. 4% keeps Prime viable while the paid tiers stay clearly worth upgrading to."},
+{theme:"Money model", title:"Annual billing gets two months free", status:"Locked", why:"Improves cash flow while rewarding vendors willing to commit."},
+{theme:"Money model", title:"Trust and safety features are never gated by plan", status:"Locked", why:"Verification, reviews, disputes, low-stock alerts and buyer messages stay free everywhere — gating them would undercut the whole platform's promise."},
+{theme:"Technology", title:"Next.js, Supabase and Vercel", status:"Locked", why:"The combination best represented in AI training data, meaning fewer failed generations and a lower cost while building without a personal safety net for debugging."},
+{theme:"Technology", title:"Row-Level Security on every table, from day one", status:"Locked", why:"The most common vibecoding failure is one tenant able to read another's data. This is treated as non-negotiable, not an optimisation."},
+{theme:"Technology", title:"Payment and webhook logic runs server-side only", status:"Locked", why:"Keeps money-moving logic and any sensitive keys out of anything the browser can reach."},
+{theme:"Technology", title:"Separate staging and production environments", status:"Locked", why:"Protects a live product from an experiment that goes wrong, especially valuable without hands-on debugging ability."},
+{theme:"Brand & design", title:"Cream, near-black and terracotta palette", status:"Locked", why:"Deliberately avoids both corporate SaaS blue and the orange already associated with a major local competitor, while suiting a warm, trustworthy tone."},
+{theme:"Brand & design", title:"Bricolage Grotesque for headings, Inter for interface text", status:"Locked", why:"A distinctive display face paired with a highly legible workhorse — both free to use commercially."},
+{theme:"Brand & design", title:"The two-tone ring mark", status:"Locked", why:"Reads clearly at small sizes through colour separation rather than relying on weight alone, and doubles naturally as the loading animation."},
+{theme:"Brand & design", title:"A warm, encouraging voice throughout", status:"Locked", why:"Matches a platform whose core positioning is trust, in a market where most sellers currently operate on hope alone."},
+{theme:"Open", title:"Full design token set", status:"Open", why:"Type scale, spacing, radius, shadow and status-colour values still need drafting so coding agents apply them consistently instead of inventing them."},
+{theme:"Open", title:"SMS and WhatsApp monthly allowances per plan", status:"Open", why:"Depends on real usage and cost data once the platform is live."},
+{theme:"Open", title:"An Apex per-transaction commission cap", status:"Open", why:"Would protect very large individual sales from a flat percentage; not yet decided."},
+{theme:"Open", title:"Support response-time targets", status:"Open", why:"Best set once real support volume is known."},
+];
+
+const themes = ["all", ...new Set(decisions.map(d=>d.theme))];
+const chipScroll = document.getElementById('chipScroll');
+themes.slice(1).forEach(t=>{
+  const chip = document.createElement('button');
+  chip.className='chip'; chip.dataset.theme=t; chip.textContent=t;
+  chipScroll.appendChild(chip);
+});
+
+const decisionList = document.getElementById('decisionList');
+function renderDecisions(){
+  decisionList.innerHTML = '';
+  const grouped = {};
+  decisions.forEach(d=>{ (grouped[d.theme] = grouped[d.theme]||[]).push(d); });
+  Object.keys(grouped).forEach(theme=>{
+    const group = document.createElement('div');
+    group.className='theme-group'; group.dataset.theme=theme;
+    const h = document.createElement('div');
+    h.className='theme-title'; h.textContent=theme;
+    group.appendChild(h);
+    grouped[theme].forEach(d=>{
+      const row = document.createElement('div');
+      const statusClass = d.status==='Locked' ? 'tag-locked' : (d.status==='Changed' ? 'tag-changed' : 'tag-open');
+      row.className='decision-row' + (d.status==='Changed' ? ' is-changed' : ''); row.dataset.theme=theme; row.dataset.title=d.title.toLowerCase();
+      row.innerHTML = `
+        <div class="decision-head">
+          <span class="d-title">${d.title}</span>
+          <span class="decision-meta">
+            <span class="tag ${statusClass}">${d.status}</span>
+            <svg class="chevron" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span>
+        </div>
+        <div class="decision-body"><div class="decision-body-inner">${d.why}</div></div>
+      `;
+      row.addEventListener('click', ()=> row.classList.toggle('open'));
+      group.appendChild(row);
+    });
+    decisionList.appendChild(group);
+  });
+}
+renderDecisions();
+
+document.querySelectorAll('.chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    const theme = chip.dataset.theme;
+    document.querySelectorAll('.theme-group').forEach(g=>{
+      g.style.display = (theme==='all' || g.dataset.theme===theme) ? '' : 'none';
+    });
+  });
+});
+
+document.getElementById('decisionSearch').addEventListener('input', (e)=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('.decision-row').forEach(row=>{
+    const match = row.dataset.title.includes(q) || row.querySelector('.decision-body-inner').textContent.toLowerCase().includes(q);
+    row.classList.toggle('hidden', q.length>0 && !match);
+  });
+  document.querySelectorAll('.theme-group').forEach(g=>{
+    const visible = [...g.querySelectorAll('.decision-row')].some(r=>!r.classList.contains('hidden'));
+    if(q.length>0){ g.style.display = visible ? '' : 'none'; }
+  });
+});
+</script>
+</body>
+</html>
