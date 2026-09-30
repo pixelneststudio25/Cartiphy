@@ -128,7 +128,7 @@ header{
 @media (max-width:640px){ .brand svg{height:22px;} }
 .brand span{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:19px;}
 
-nav.desktop-nav{display:flex; gap:36px;}
+nav.desktop-nav{display:flex; gap:30px; align-items:center;}
 nav.desktop-nav a{
   font-size:14.5px; font-weight:500; text-decoration:none; color:var(--ink);
   position:relative; padding:4px 0;
@@ -139,6 +139,12 @@ nav.desktop-nav a::after{
   transition:transform .35s var(--ease);
 }
 nav.desktop-nav a:hover::after{transform:scaleX(1);}
+nav.desktop-nav a.nav-cross{
+  padding:8px 16px; border:1px solid var(--line-strong); border-radius:999px;
+  font-weight:600; font-size:13.5px;
+}
+nav.desktop-nav a.nav-cross::after{display:none;}
+nav.desktop-nav a.nav-cross:hover{border-color:var(--ink); background:var(--paper);}
 
 .menu-btn{
   width:44px; height:44px; border:none; background:transparent;
@@ -171,6 +177,9 @@ nav.desktop-nav a:hover::after{transform:scaleX(1);}
   font-family:'Bricolage Grotesque',sans-serif; font-size:24px; font-weight:700;
   text-decoration:none; color:var(--ink);
   padding:6px 0;
+}
+#side-menu a.nav-cross{
+  font-size:16px; color:var(--terracotta); border-top:1px solid var(--line); padding-top:22px; margin-top:4px;
 }
 #overlay{
   position:fixed; inset:0; background:rgba(28,27,26,0.25); z-index:105;
@@ -404,6 +413,9 @@ footer{padding:60px 0 50px;}
 .footer-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
 footer .brand span{font-size:16px;}
 .footer-note{font-size:13px; color:var(--ink-faint);}
+.footer-links{display:flex; gap:20px; flex-wrap:wrap;}
+.footer-links a{font-size:13.5px; font-weight:600; color:var(--terracotta); text-decoration:none;}
+.footer-links a:hover{text-decoration:underline;}
 
 /* ---------- Touch target safety net ---------- */
 @media (hover:none){
@@ -438,6 +450,7 @@ footer .brand span{font-size:16px;}
       <a href="#pricing">Pricing</a>
       <a href="#decisions">Decisions</a>
       <a href="#roadmap">Roadmap</a>
+      <a href="masterplan.html" class="nav-cross">Master Plan →</a>
     </nav>
     <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -452,6 +465,7 @@ footer .brand span{font-size:16px;}
   <a href="#pricing">Pricing</a>
   <a href="#decisions">Decisions</a>
   <a href="#roadmap">Roadmap</a>
+  <a href="masterplan.html" class="nav-cross">Master Plan →</a>
 </nav>
 
 <main id="top">
@@ -637,7 +651,7 @@ footer .brand span{font-size:16px;}
       <div class="section-head reveal">
         <p class="eyebrow">Where this is going</p>
         <h2>Built in tested stages, not one leap</h2>
-        <p>Each stage ends with a working, checkpointed slice before the next begins.</p>
+        <p>Each stage ends with a working, checkpointed slice before the next begins. The full breakdown — every phase, checkpoint, and the working rules behind them — lives in the <a href="masterplan.html" style="color:var(--terracotta); font-weight:600;">Master Plan</a>.</p>
       </div>
       <div class="roadmap reveal">
         <div class="phase" data-n="0"><h4>Foundations</h4><p>Security baseline, environments, core schema.</p></div>
@@ -651,6 +665,9 @@ footer .brand span{font-size:16px;}
         <div class="phase" data-n="8"><h4>Moderation & admin</h4><p>The full admin panel and enforcement tooling.</p></div>
         <div class="phase" data-n="9"><h4>Launch readiness</h4><p>Legal review, security pass, soft launch.</p></div>
       </div>
+      <div class="reveal" style="margin-top:40px;">
+        <a class="btn btn-primary" href="masterplan.html">Read the full Master Plan →</a>
+      </div>
     </div>
   </section>
 
@@ -662,6 +679,9 @@ footer .brand span{font-size:16px;}
       <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:20px;"><path d="M373.365 298.797C338.815 358.695 274.116 399.012 200 399.012C128.699 399.012 66.1149 361.699 30.7021 305.536L82.7246 275.501C107.717 313.742 150.907 339.012 200 339.012C251.91 339.012 297.22 310.759 321.396 268.792L373.365 298.797ZM180 60.4316C112.154 70.1364 60 128.482 60 199.012C60 212.934 62.0332 226.382 65.8174 239.075L12.8379 269.663C4.54108 247.695 0 223.884 0 199.012C0 95.3048 78.9336 10.0345 180 0V60.4316ZM220 0C321.066 10.0345 400 95.3048 400 199.012C400 221.064 396.43 242.281 389.838 262.12L336.279 231.198C338.711 220.864 340 210.088 340 199.012C340 128.482 287.846 70.1364 220 60.4316V0Z" fill="#1C1B1A"/><path d="M199.5 107C220.868 107 240.542 114.247 256.203 126.415L232.58 150.038C223.12 143.699 211.743 140 199.5 140C166.639 140 140 166.639 140 199.5C140 232.361 166.639 259 199.5 259C232.361 259 259 232.361 259 199.5C259 187.935 255.7 177.141 249.991 168.008L273.717 144.282C285.202 159.693 292 178.803 292 199.5C292 250.586 250.586 292 199.5 292C148.414 292 107 250.586 107 199.5C107 148.414 148.414 107 199.5 107Z" fill="#C1592B"/></svg>
       <span>Cartiphy</span>
     </a>
+    <div class="footer-links">
+      <a href="masterplan.html">Master Plan</a>
+    </div>
     <p class="footer-note">Blueprint v1 — internal reference, not for public distribution.</p>
   </div>
 </footer>
