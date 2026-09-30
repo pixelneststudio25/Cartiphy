@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cartiphy — Level 1 Master Plan</title>
+<meta name="description" content="Cartiphy's Level 1 Master Plan: goals, stack, rules, and phase sequencing — the single source of truth.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F7F4EF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cpath d='M373.365 298.797C338.815 358.695 274.116 399.012 200 399.012C128.699 399.012 66.1149 361.699 30.7021 305.536L82.7246 275.501C107.717 313.742 150.907 339.012 200 339.012C251.91 339.012 297.22 310.759 321.396 268.792L373.365 298.797ZM180 60.4316C112.154 70.1364 60 128.482 60 199.012C60 212.934 62.0332 226.382 65.8174 239.075L12.8379 269.663C4.54108 247.695 0 223.884 0 199.012C0 95.3048 78.9336 10.0345 180 0V60.4316ZM220 0C321.066 10.0345 400 95.3048 400 199.012C400 221.064 396.43 242.281 389.838 262.12L336.279 231.198C338.711 220.864 340 210.088 340 199.012C340 128.482 287.846 70.1364 220 60.4316V0Z' fill='%231C1B1A'/%3E%3Cpath d='M199.5 107C220.868 107 240.542 114.247 256.203 126.415L232.58 150.038C223.12 143.699 211.743 140 199.5 140C166.639 140 140 166.639 140 199.5C140 232.361 166.639 259 199.5 259C232.361 259 259 232.361 259 199.5C259 187.935 255.7 177.141 249.991 168.008L273.717 144.282C285.202 159.693 292 178.803 292 199.5C292 250.586 250.586 292 199.5 292C148.414 292 107 250.586 107 199.5C107 148.414 148.414 107 199.5 107Z' fill='%23C1592B'/%3E%3C/svg%3E" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F7F4EF; --paper:#FCFAF6; --ink:#1C1B1A; --ink-muted:#6B6764; --ink-faint:#9C968F;
+  --terracotta:#C1592B; --terracotta-tint:#F3E3DA; --line:#E4DED3; --line-strong:#D2C9BA;
+  --success:#3F6B4A; --success-tint:#E4ECE5; --gold:#A9781F; --gold-tint:#F1E8D2;
+  --changed:#8A4FBF; --changed-tint:#EDE3F5;
+  --radius:3px; --container:1180px; --ease:cubic-bezier(.4,0,.2,1);
+  --shadow-sm:0 1px 2px rgba(28,27,26,0.04), 0 1px 1px rgba(28,27,26,0.03);
+  --shadow-md:0 4px 16px rgba(28,27,26,0.06), 0 2px 6px rgba(28,27,26,0.04);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth; scroll-padding-top:90px;}
+html,body{margin:0;padding:0;}
+body{background:var(--cream); color:var(--ink); font-family:'Inter',-apple-system,sans-serif; font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); overflow-x:hidden;}
+h1,h2,h3,h4{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; line-height:1.1; letter-spacing:-0.01em; margin:0;}
+p{margin:0;} a{color:inherit;} img{max-width:100%;display:block;} button{font-family:inherit;cursor:pointer;}
+:focus-visible{outline:2px solid var(--terracotta); outline-offset:2px;}
+@media (prefers-reduced-motion:reduce){*{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}}
+.wrap{max-width:var(--container); margin:0 auto; padding:0 28px;}
+@media (max-width:640px){ .wrap{padding:0 18px;} }
+.eyebrow{font-size:13px; color:var(--ink-faint); font-weight:500;}
+code{font-family:ui-monospace,'SF Mono',Menlo,monospace; font-size:0.92em; background:var(--terracotta-tint); color:#8A3E1C; padding:1px 6px; border-radius:4px;}
+
+#loader{position:fixed; inset:0; background:var(--cream); z-index:999; display:flex; align-items:center; justify-content:center; transition:opacity .6s var(--ease), visibility .6s var(--ease);}
+#loader.hide{opacity:0; visibility:hidden;}
+#loader svg{width:56px; height:56px; animation:spin 1.1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+#progress-ring{position:fixed; top:16px; right:16px; width:34px; height:34px; z-index:60; opacity:0; transition:opacity .4s var(--ease); pointer-events:none;}
+#progress-ring.show{opacity:1;}
+#progress-ring circle{fill:none; stroke-width:3;}
+#progress-ring .track{stroke:var(--line-strong);}
+#progress-ring .fill{stroke:var(--terracotta); stroke-linecap:butt; transform:rotate(-90deg); transform-origin:50% 50%; transition:stroke-dashoffset .1s linear;}
+@media (max-width:640px){ #progress-ring{top:auto; bottom:calc(16px + env(safe-area-inset-bottom,0px)); right:16px;} }
+
+header{position:sticky; top:0; z-index:50; background:rgba(247,244,239,0.88); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+.header-row{display:flex; align-items:center; justify-content:space-between; height:78px;}
+@media (max-width:640px){ .header-row{height:66px;} }
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none;}
+.brand svg{height:26px; width:auto;}
+@media (max-width:640px){ .brand svg{height:22px;} }
+.brand span{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:19px;}
+nav.desktop-nav{display:flex; gap:26px; align-items:center;}
+nav.desktop-nav a{font-size:14px; font-weight:500; text-decoration:none; color:var(--ink); position:relative; padding:4px 0; white-space:nowrap;}
+nav.desktop-nav a::after{content:''; position:absolute; left:0; right:0; bottom:-2px; height:1.5px; background:var(--terracotta); transform:scaleX(0); transform-origin:left; transition:transform .35s var(--ease);}
+nav.desktop-nav a:hover::after{transform:scaleX(1);}
+nav.desktop-nav a.nav-cross{padding:8px 16px; border:1px solid var(--line-strong); border-radius:999px; font-weight:600; font-size:13.5px;}
+nav.desktop-nav a.nav-cross::after{display:none;}
+nav.desktop-nav a.nav-cross:hover{border-color:var(--ink); background:var(--paper);}
+.menu-btn{width:44px; height:44px; border:none; background:transparent; display:flex; align-items:center; justify-content:center; position:relative; z-index:120;}
+.menu-btn span{position:absolute; width:22px; height:1.6px; background:var(--ink); transition:transform .35s var(--ease), opacity .35s var(--ease);}
+.menu-btn span:nth-child(1){transform:translateY(-6px);}
+.menu-btn span:nth-child(3){transform:translateY(6px);}
+.menu-btn.open span:nth-child(1){transform:rotate(45deg);}
+.menu-btn.open span:nth-child(2){opacity:0;}
+.menu-btn.open span:nth-child(3){transform:rotate(-45deg);}
+@media (min-width:1101px){ .menu-btn{display:none;} }
+@media (max-width:1100px){ nav.desktop-nav{display:none;} }
+#side-menu{position:fixed; top:0; right:0; height:100%; width:min(340px,86vw); background:var(--paper); z-index:110; transform:translateX(100%); transition:transform .5s var(--ease); box-shadow:-8px 0 40px rgba(28,27,26,0.08); padding:calc(100px + env(safe-area-inset-top,0px)) 32px calc(40px + env(safe-area-inset-bottom,0px)); display:flex; flex-direction:column; gap:22px; overflow-y:auto;}
+#side-menu.open{transform:translateX(0);}
+#side-menu a{font-family:'Bricolage Grotesque',sans-serif; font-size:20px; font-weight:700; text-decoration:none; color:var(--ink); padding:4px 0;}
+#side-menu a.nav-cross{font-size:15px; color:var(--terracotta); border-top:1px solid var(--line); padding-top:20px; margin-top:2px;}
+#overlay{position:fixed; inset:0; background:rgba(28,27,26,0.25); z-index:105; opacity:0; visibility:hidden; transition:opacity .4s var(--ease), visibility .4s var(--ease);}
+#overlay.show{opacity:1; visibility:visible;}
+
+.hero{padding:88px 0 64px; position:relative;}
+@media (max-width:640px){ .hero{padding:48px 0 40px;} }
+.hero h1{font-size:clamp(34px,5.6vw,62px); max-width:18ch;}
+.hero p.lede{margin-top:22px; max-width:60ch; font-size:18px; color:var(--ink-muted);}
+@media (max-width:640px){ .hero p.lede{font-size:16px;} }
+.status-pill{display:inline-flex; align-items:center; gap:8px; background:var(--success-tint); color:var(--success); font-size:13px; font-weight:600; padding:6px 14px; border-radius:999px; margin-bottom:20px;}
+.status-pill::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--success);}
+
+.reveal{opacity:0; transform:translateY(16px); transition:opacity .7s var(--ease), transform .7s var(--ease);}
+.reveal.in{opacity:1; transform:translateY(0);}
+
+section{padding:80px 0;}
+@media (max-width:640px){ section{padding:52px 0;} }
+section + section{border-top:1px solid var(--line);}
+.section-head{max-width:680px; margin-bottom:44px;}
+@media (max-width:640px){ .section-head{margin-bottom:32px;} }
+.section-head .eyebrow{margin-bottom:12px;}
+.section-head h2{font-size:clamp(26px,4vw,40px);}
+.section-head p{margin-top:14px; color:var(--ink-muted); font-size:16.5px; max-width:60ch;}
+@media (max-width:640px){ .section-head p{font-size:15px;} }
+
+/* Quick reference table */
+.ref-table{width:100%; border-collapse:collapse; border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+.ref-table tr{border-top:1px solid var(--line);}
+.ref-table tr:first-child{border-top:none;}
+.ref-table td{padding:16px 18px; vertical-align:top; font-size:15px;}
+.ref-table td:first-child{width:220px; font-weight:600; color:var(--ink-muted); font-size:13px; text-transform:uppercase; letter-spacing:0.02em;}
+@media (max-width:640px){
+  .ref-table, .ref-table tbody, .ref-table tr, .ref-table td{display:block; width:100%;}
+  .ref-table tr{padding:14px 0;}
+  .ref-table td:first-child{width:auto; margin-bottom:4px;}
+  .ref-table td{padding:2px 0;}
+}
+.ref-search{width:100%; max-width:320px; padding:12px 16px; border:1px solid var(--line-strong); border-radius:8px; background:var(--paper); font-family:inherit; font-size:14.5px; margin-bottom:24px; min-height:44px;}
+
+/* Pricing matrix */
+.matrix-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow-md);}
+table.matrix{width:100%; border-collapse:collapse; min-width:640px;}
+table.matrix th, table.matrix td{padding:14px 18px; text-align:left; font-size:14.5px; border-bottom:1px solid var(--line);}
+table.matrix thead th{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:16px; background:var(--paper); position:sticky; top:0;}
+table.matrix thead th.col-plan{text-align:center;}
+table.matrix tbody td.col-plan{text-align:center; color:var(--ink-muted);}
+table.matrix tbody tr:hover{background:rgba(193,89,43,0.03);}
+table.matrix tbody tr:last-child td{border-bottom:none;}
+table.matrix td.feature-name{font-weight:500;}
+.yes{color:var(--success); font-weight:600;}
+.no{color:var(--ink-faint);}
+.price-row td{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:19px;}
+.plan-best-col{background:var(--terracotta-tint);}
+
+.trial-note{margin-top:28px; padding:20px 24px; background:var(--paper); border:1px solid var(--line-strong); border-radius:8px; font-size:15px; color:var(--ink-muted);}
+.trial-note strong{color:var(--ink); font-weight:600;}
+
+/* Tabs reused */
+.tabs{display:flex; gap:10px; margin-bottom:36px; flex-wrap:wrap;}
+.tab-btn{padding:12px 20px; border:1px solid var(--line-strong); border-radius:999px; background:transparent; font-size:14px; font-weight:600; color:var(--ink-muted); transition:all .25s var(--ease); min-height:44px;}
+.tab-btn.active{background:var(--ink); border-color:var(--ink); color:var(--cream);}
+.tab-view{display:none;} .tab-view.active{display:block;}
+
+.stepper{position:relative; padding-left:44px;}
+@media (max-width:480px){ .stepper{padding-left:36px;} }
+.stepper::before{content:''; position:absolute; left:15px; top:8px; bottom:8px; width:1px; background:var(--line-strong);}
+@media (max-width:480px){ .stepper::before{left:12px;} }
+.step{position:relative; padding-bottom:34px;}
+@media (max-width:480px){ .step{padding-bottom:26px;} }
+.step:last-child{padding-bottom:0;}
+.step::before{content:attr(data-n); position:absolute; left:-44px; top:0; width:32px; height:32px; border-radius:50%; background:var(--paper); border:1px solid var(--line-strong); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:var(--ink-muted);}
+@media (max-width:480px){ .step::before{left:-36px; width:26px; height:26px; font-size:11.5px;} }
+.step.accent::before{background:var(--terracotta); border-color:var(--terracotta); color:#fff;}
+.step h4{font-size:17.5px; margin-bottom:5px;}
+@media (max-width:480px){ .step h4{font-size:16px;} }
+.step p{color:var(--ink-muted); font-size:15px; max-width:62ch;}
+@media (max-width:480px){ .step p{font-size:14px;} }
+
+/* Before/after problem-row reused for marketplace rules */
+.rule-cols{display:grid; grid-template-columns:1fr 1fr; gap:2px; border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+@media (max-width:700px){ .rule-cols{grid-template-columns:1fr;} }
+.rule-col{background:var(--paper); padding:28px;}
+.rule-col h4{font-size:14px; text-transform:uppercase; letter-spacing:0.03em; margin-bottom:16px; font-family:'Inter',sans-serif; font-weight:600;}
+.rule-col.allowed h4{color:var(--success);}
+.rule-col.prohibited h4{color:var(--terracotta);}
+.rule-col ul{margin:0; padding:0; list-style:none;}
+.rule-col li{font-size:15px; color:var(--ink-muted); padding:10px 0 10px 26px; position:relative; border-top:1px solid var(--line);}
+.rule-col li:first-child{border-top:none; padding-top:0;}
+.rule-col.allowed li::before{content:'✓'; position:absolute; left:0; color:var(--success); font-weight:700;}
+.rule-col.prohibited li::before{content:'✕'; position:absolute; left:0; color:var(--terracotta); font-weight:700;}
+
+/* Ladder reused */
+.ladder{display:flex; flex-direction:column; border:1px solid var(--line); border-radius:8px; overflow:hidden; box-shadow:var(--shadow-sm); margin-bottom:20px;}
+.ladder-step{display:grid; grid-template-columns:56px 1fr; gap:20px; padding:20px 22px; border-bottom:1px solid var(--line); align-items:center;}
+@media (max-width:480px){ .ladder-step{grid-template-columns:38px 1fr; gap:14px; padding:16px;} }
+.ladder-step:last-child{border-bottom:none;}
+.ladder-num{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:20px; color:var(--ink-faint);}
+@media (max-width:480px){ .ladder-num{font-size:16px;} }
+.ladder-step.fast .ladder-num{color:var(--terracotta);}
+.ladder-step h4{font-size:16px; margin-bottom:3px;}
+@media (max-width:480px){ .ladder-step h4{font-size:14.5px;} }
+.ladder-step p{font-size:14px; color:var(--ink-muted);}
+@media (max-width:480px){ .ladder-step p{font-size:13px;} }
+.track-label{font-size:13px; font-weight:600; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.02em; margin:28px 0 12px;}
+.track-label:first-child{margin-top:0;}
+
+/* Verification tiers */
+.tier-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+@media (max-width:760px){ .tier-grid{grid-template-columns:1fr;} }
+.tier-card{border:1px solid var(--line-strong); border-radius:8px; padding:22px; background:var(--paper);}
+.tier-card .tier-n{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:13px; color:var(--terracotta); margin-bottom:8px;}
+.tier-card h4{font-size:17px; margin-bottom:8px;}
+.tier-card p{font-size:14.5px; color:var(--ink-muted);}
+
+/* Explorer (data model + admin editables) reused pattern */
+.filter-bar{display:flex; gap:12px; margin-bottom:28px; align-items:center; flex-wrap:nowrap;}
+.filter-bar input[type="search"]{flex:0 0 auto; width:100%; max-width:280px; padding:12px 16px; border:1px solid var(--line-strong); border-radius:8px; background:var(--paper); font-family:inherit; font-size:14.5px; min-height:44px;}
+@media (max-width:640px){ .filter-bar{flex-wrap:wrap;} .filter-bar input[type="search"]{max-width:100%; order:-1; margin-bottom:4px;} }
+.chip-scroll{display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+.chip-scroll::-webkit-scrollbar{display:none;}
+.chip{padding:10px 16px; border:1px solid var(--line-strong); border-radius:999px; background:var(--paper); font-size:13px; font-weight:500; color:var(--ink-muted); white-space:nowrap; flex-shrink:0; min-height:40px;}
+.chip.active{background:var(--ink); border-color:var(--ink); color:var(--cream);}
+.theme-group{margin-bottom:10px;}
+.theme-title{font-family:'Bricolage Grotesque',sans-serif; font-size:15px; font-weight:700; padding:16px 0 10px; color:var(--ink-muted);}
+.decision-row{border-top:1px solid var(--line); padding:16px 0; cursor:pointer; transition:background .3s var(--ease);}
+.decision-row:hover{background:rgba(28,27,26,0.015);}
+.decision-row:last-child{border-bottom:1px solid var(--line);}
+.decision-head{display:flex; justify-content:space-between; align-items:center; gap:16px;}
+.decision-head .d-title{font-size:15.5px; font-weight:500;}
+@media (max-width:480px){ .decision-head .d-title{font-size:14.5px;} }
+.chevron{transition:transform .3s var(--ease); color:var(--ink-faint); flex-shrink:0;}
+.decision-row.open .chevron{transform:rotate(180deg);}
+.decision-body{max-height:0; overflow:hidden; transition:max-height .4s var(--ease);}
+.decision-row.open .decision-body{max-height:200px;}
+.decision-body-inner{padding:12px 0 4px; font-size:14.5px; color:var(--ink-muted); max-width:72ch;}
+.decision-row.hidden{display:none;}
+
+/* Admin stages */
+.stage-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+@media (max-width:900px){ .stage-grid{grid-template-columns:1fr 1fr;} }
+@media (max-width:520px){ .stage-grid{grid-template-columns:1fr;} }
+.stage-card{border:1px solid var(--line-strong); border-radius:8px; padding:20px; background:var(--paper);}
+.stage-card .stage-tag{display:inline-block; font-size:11px; font-weight:700; color:var(--terracotta); background:var(--terracotta-tint); padding:3px 10px; border-radius:999px; margin-bottom:10px;}
+.stage-card h4{font-size:16px; margin-bottom:8px;}
+.stage-card p{font-size:13.5px; color:var(--ink-muted); margin-bottom:8px;}
+.stage-card .stage-when{font-size:12px; color:var(--ink-faint); font-weight:600;}
+
+/* Design system */
+.swatch-row{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:36px;}
+.swatch{width:120px;}
+.swatch .sw-box{height:72px; border-radius:8px; border:1px solid var(--line); margin-bottom:8px;}
+.swatch .sw-label{font-size:12px; font-weight:600;}
+.swatch .sw-hex{font-size:11.5px; color:var(--ink-faint); font-family:ui-monospace,monospace;}
+.rule-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;}
+@media (max-width:640px){ .rule-grid{grid-template-columns:1fr;} }
+.rule-chip{padding:14px 18px; background:var(--paper); border:1px solid var(--line); border-radius:8px; font-size:14px; color:var(--ink-muted);}
+.rule-chip strong{color:var(--ink); display:block; margin-bottom:2px; font-size:14.5px;}
+
+/* Phases accordion */
+.phase-card{border:1px solid var(--line); border-radius:10px; margin-bottom:14px; overflow:hidden; background:var(--paper); transition:box-shadow .3s var(--ease);}
+.phase-card.open{box-shadow:var(--shadow-md);}
+.phase-head{display:flex; align-items:center; gap:18px; padding:20px 22px; cursor:pointer;}
+@media (max-width:480px){ .phase-head{padding:16px; gap:12px;} }
+.phase-num{font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:22px; color:var(--terracotta); flex-shrink:0; width:36px;}
+@media (max-width:480px){ .phase-num{font-size:18px; width:28px;} }
+.phase-head-text{flex:1;}
+.phase-head-text h4{font-size:17.5px;}
+@media (max-width:480px){ .phase-head-text h4{font-size:15.5px;} }
+.phase-head-text .phase-sub{font-size:13.5px; color:var(--ink-faint); margin-top:2px;}
+.phase-card .chevron{transition:transform .3s var(--ease); color:var(--ink-faint); flex-shrink:0;}
+.phase-card.open .chevron{transform:rotate(180deg);}
+.phase-body{max-height:0; overflow:hidden; transition:max-height .5s var(--ease);}
+.phase-body-inner{padding:0 22px 24px; border-top:1px solid var(--line); padding-top:18px; margin-top:2px;}
+@media (max-width:480px){ .phase-body-inner{padding:14px 16px 20px;} }
+.phase-body-inner p{font-size:15px; color:var(--ink-muted); margin-bottom:14px;}
+.phase-checkpoint{background:var(--success-tint); border-radius:6px; padding:12px 16px; font-size:14px; color:var(--success);}
+.phase-checkpoint strong{font-weight:700;}
+
+/* Working rules numbered list */
+.numbered-list{counter-reset:rulenum; display:flex; flex-direction:column; gap:0;}
+.numbered-list li{list-style:none; display:flex; gap:18px; padding:18px 0; border-top:1px solid var(--line);}
+.numbered-list li:first-child{border-top:none;}
+.numbered-list .num{counter-increment:rulenum; font-family:'Bricolage Grotesque',sans-serif; font-weight:700; color:var(--ink-faint); font-size:18px; flex-shrink:0; width:28px;}
+.numbered-list .num::before{content:counter(rulenum);}
+.numbered-list p{font-size:15.5px;}
+@media (max-width:480px){ .numbered-list p{font-size:14.5px;} }
+
+.two-col-list{display:grid; grid-template-columns:1fr 1fr; gap:32px;}
+@media (max-width:760px){ .two-col-list{grid-template-columns:1fr;} }
+.two-col-list h4{font-size:15px; margin-bottom:14px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.02em; font-family:'Inter',sans-serif; font-weight:600;}
+.two-col-list ul{margin:0; padding:0; list-style:none;}
+.two-col-list li{font-size:15px; color:var(--ink-muted); padding:9px 0; border-top:1px solid var(--line);}
+.two-col-list li:first-child{border-top:none;}
+
+.open-tags{display:flex; flex-wrap:wrap; gap:10px;}
+.open-item{border:1px solid var(--gold); background:var(--gold-tint); color:#7A5E17; border-radius:8px; padding:14px 18px; font-size:14.5px; max-width:100%;}
+
+footer{padding:56px 0 48px;}
+@media (max-width:640px){ footer{padding:40px 0 calc(32px + env(safe-area-inset-bottom,0px));} }
+.footer-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+footer .brand span{font-size:16px;}
+.footer-note{font-size:13px; color:var(--ink-faint);}
+.footer-links{display:flex; gap:20px; flex-wrap:wrap;}
+.footer-links a{font-size:13.5px; font-weight:600; color:var(--terracotta); text-decoration:none;}
+.footer-links a:hover{text-decoration:underline;}
+
+@media (hover:none){ .chip, .tab-btn{ min-height:44px; } }
+</style>
+</head>
+<body>
+
+<div id="loader" aria-hidden="true">
+  <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M373.365 298.797C338.815 358.695 274.116 399.012 200 399.012C128.699 399.012 66.1149 361.699 30.7021 305.536L82.7246 275.501C107.717 313.742 150.907 339.012 200 339.012C251.91 339.012 297.22 310.759 321.396 268.792L373.365 298.797ZM180 60.4316C112.154 70.1364 60 128.482 60 199.012C60 212.934 62.0332 226.382 65.8174 239.075L12.8379 269.663C4.54108 247.695 0 223.884 0 199.012C0 95.3048 78.9336 10.0345 180 0V60.4316ZM220 0C321.066 10.0345 400 95.3048 400 199.012C400 221.064 396.43 242.281 389.838 262.12L336.279 231.198C338.711 220.864 340 210.088 340 199.012C340 128.482 287.846 70.1364 220 60.4316V0Z" fill="#1C1B1A"/>
+    <path d="M199.5 107C220.868 107 240.542 114.247 256.203 126.415L232.58 150.038C223.12 143.699 211.743 140 199.5 140C166.639 140 140 166.639 140 199.5C140 232.361 166.639 259 199.5 259C232.361 259 259 232.361 259 199.5C259 187.935 255.7 177.141 249.991 168.008L273.717 144.282C285.202 159.693 292 178.803 292 199.5C292 250.586 250.586 292 199.5 292C148.414 292 107 250.586 107 199.5C107 148.414 148.414 107 199.5 107Z" fill="#C1592B"/>
+  </svg>
+</div>
+
+<svg id="progress-ring" viewBox="0 0 40 40">
+  <circle class="track" cx="20" cy="20" r="17"></circle>
+  <circle class="fill" cx="20" cy="20" r="17" stroke-dasharray="106.8" stroke-dashoffset="106.8"></circle>
+</svg>
+
+<header>
+  <div class="wrap header-row">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M373.365 298.797C338.815 358.695 274.116 399.012 200 399.012C128.699 399.012 66.1149 361.699 30.7021 305.536L82.7246 275.501C107.717 313.742 150.907 339.012 200 339.012C251.91 339.012 297.22 310.759 321.396 268.792L373.365 298.797ZM180 60.4316C112.154 70.1364 60 128.482 60 199.012C60 212.934 62.0332 226.382 65.8174 239.075L12.8379 269.663C4.54108 247.695 0 223.884 0 199.012C0 95.3048 78.9336 10.0345 180 0V60.4316ZM220 0C321.066 10.0345 400 95.3048 400 199.012C400 221.064 396.43 242.281 389.838 262.12L336.279 231.198C338.711 220.864 340 210.088 340 199.012C340 128.482 287.846 70.1364 220 60.4316V0Z" fill="#1C1B1A"/><path d="M199.5 107C220.868 107 240.542 114.247 256.203 126.415L232.58 150.038C223.12 143.699 211.743 140 199.5 140C166.639 140 140 166.639 140 199.5C140 232.361 166.639 259 199.5 259C232.361 259 259 232.361 259 199.5C259 187.935 255.7 177.141 249.991 168.008L273.717 144.282C285.202 159.693 292 178.803 292 199.5C292 250.586 250.586 292 199.5 292C148.414 292 107 250.586 107 199.5C107 148.414 148.414 107 199.5 107Z" fill="#C1592B"/></svg>
+      <span>Cartiphy</span>
+    </a>
+    <nav class="desktop-nav">
+      <a href="#reference">Reference</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#trust">Trust</a>
+      <a href="#data-model">Data & Admin</a>
+      <a href="#design">Design</a>
+      <a href="#phases">Phases</a>
+      <a href="#rules">Rules</a>
+      <a href="index.html" class="nav-cross">← Product</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div id="overlay"></div>
+<nav id="side-menu">
+  <a href="#reference">Reference</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#architecture">Architecture</a>
+  <a href="#trust">Trust</a>
+  <a href="#data-model">Data & Admin</a>
+  <a href="#design">Design</a>
+  <a href="#phases">Phases</a>
+  <a href="#rules">Rules</a>
+  <a href="index.html" class="nav-cross">← Back to Product</a>
+</nav>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <span class="status-pill">Locked · Single source of truth</span>
+      <h1>The Level 1 Master Plan</h1>
+      <p class="lede">Goals, stack, rules, and phase sequencing for Cartiphy — a Nigeria-first ecommerce store-builder. If something isn't decided here or in <code>design.md</code>, no coding agent should guess it. Ask first.</p>
+      <div class="cta-row" style="display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;">
+        <a href="index.html" class="btn btn-ghost" style="display:inline-flex; align-items:center; gap:8px; padding:12px 22px; font-size:14.5px; font-weight:600; border-radius:3px; text-decoration:none; border:1px solid var(--line-strong); color:var(--ink);">← Back to the product</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== QUICK REFERENCE ===================== -->
+  <section id="reference">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">§1–2 · Product & locked decisions</p>
+        <h2>Quick reference</h2>
+        <p>Cartiphy is a Nigeria-first store-builder: vendors self-serve a store on their own subdomain from a curated template library; buyers pay through Flutterwave; shipping happens off-platform. Three roles — Vendor, Customer, Platform Admin.</p>
+      </div>
+      <input type="search" class="ref-search" id="refSearch" placeholder="Search the reference table…">
+      <table class="ref-table" id="refTable"></table>
+    </div>
+  </section>
+
+  <!-- ===================== PRICING ===================== -->
+  <section id="pricing">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">§3 · Plans & entitlements</p>
+        <h2>Prime, Venture and Apex</h2>
+        <p>Annual billing is 10 months' price for 12. Trust and safety features — verification, reviews, disputes, buyer confirmation, buyer-facing messages, low-stock alerts — are never gated by plan.</p>
+      </div>
+      <div class="matrix-scroll reveal">
+        <table class="matrix" id="pricingMatrix"></table>
+      </div>
+      <div class="trial-note reveal">
+        <strong>Trial and lapse rules —</strong> everyone gets 14 days of Venture features (2% commission applies), starting only after Tier 1 verification, one trial per unique phone/bank account. After the trial or a lapsed subscription, the vendor falls back to Prime with all data intact; products over the Prime cap stay live but new ones can't be added. Upgrade prompts stay honest: live savings meter, moment-of-need cards, no manipulative modals.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ARCHITECTURE ===================== -->
+  <section id="architecture">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">§4 · Architecture</p>
+        <h2>How a request becomes a paid, fulfilled order</h2>
+        <p>Two flows: rendering a storefront, and settling a payment without Cartiphy ever holding vendor funds.</p>
+      </div>
+      <div class="tabs reveal">
+        <button class="tab-btn active" data-tab="render">Storefront rendering</button>
+        <button class="tab-btn" data-tab="pay">Payments & settlement</button>
+      </div>
+      <div class="tab-view active" id="tab-render">
+        <div class="stepper">
+          <div class="step accent" data-n="1"><h4>Request hits the wildcard subdomain</h4><p><code>store.cartiphy.com</code> — Next.js middleware reads the host header and resolves the store.</p></div>
+          <div class="step" data-n="2"><h4>Template and data load</h4><p>The matched template and the store's live data are loaded server-side.</p></div>
+          <div class="step" data-n="3"><h4>Server fills the template</h4><p>A Liquid/Handlebars-style engine fills placeholders and returns full HTML — so SEO and WhatsApp link previews render correctly, not an empty shell.</p></div>
+          <div class="step" data-n="4"><h4>platform.js takes over</h4><p>The shared client SDK handles cart actions, checkout initiation, and event tracking against the API.</p></div>
+        </div>
+      </div>
+      <div class="tab-view" id="tab-pay">
+        <div class="stepper">
+          <div class="step accent" data-n="1"><h4>Checkout total is built</h4><p>Items plus the vendor's flat delivery fee.</p></div>
+          <div class="step" data-n="2"><h4>Flutterwave split charge created</h4><p>Commission routes to Cartiphy's main account; the vendor's share routes to their own sub-account. The seller bears the processing fee.</p></div>
+          <div class="step" data-n="3"><h4>Order created only on verified webhook</h4><p>Never on client-side confirmation — <code>orders</code> and <code>order_items</code> wait for a confirmed payment event.</p></div>
+          <div class="step" data-n="4"><h4>Flutterwave settles directly</h4><p>The vendor's sub-account pays out to their own bank account on Flutterwave's own schedule. Cartiphy never holds, releases, or gates this money — a direct consequence of no escrow.</p></div>
+          <div class="step" data-n="5"><h4>Dashboard shows history, not a wallet</h4><p>Earnings history is derived from <code>orders</code>/<code>payments</code> — never a "balance" or "available to withdraw" figure, since no such balance exists.</p></div>
+        </div>
+      </div>
+      <div class="section-head reveal" style="margin-top:56px; margin-bottom:24px;">
+        <p class="eyebrow">Security baseline — Phase 0, non-negotiable</p>
+      </div>
+      <div class="two-col-list reveal">
+        <div>
+          <ul>
+            <li>Row Level Security on every table; vendor / customer / admin role model</li>
+            <li>Payment and webhook logic runs server-side only — service-role key never reaches the browser</li>
+            <li>Flutterwave webhook signature verification, idempotent via <code>webhook_events</code></li>
+          </ul>
+        </div>
+        <div>
+          <ul>
+            <li>Rate limiting on auth, checkout, and confirmation-link endpoints</li>
+            <li>Automated cross-tenant test at every checkpoint: vendor A must fail to read vendor B's orders</li>
+            <li>Stock decrement is atomic — single transaction, rejected if stock is insufficient</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TRUST ===================== -->
+  <section id="trust">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">§5 · Trust, safety & enforcement</p>
+        <h2>Prevent first, punish second</h2>
+        <p>A friendly block at the moment a rule would be broken stops most violations before they happen.</p>
+      </div>
+
+      <div class="rule-cols reveal">
+        <div class="rule-col allowed">
+          <h4>Always allowed</h4>
+          <ul>
+            <li>Answering buyer questions on WhatsApp</li>
+            <li>Coordinating delivery after payment</li>
+            <li>Selling to a vendor's own existing customers by chat</li>
+          </ul>
+        </div>
+        <div class="rule-col prohibited">
+          <h4>Prohibited</h4>
+          <ul>
+            <li>Phone numbers, bank details, or "DM to buy" in listings/store text</li>
+            <li>Directing a Cartiphy-originated buyer to pay outside checkout</li>
+            <li>Discouraging checkout use in any form</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-head reveal" style="margin-top:56px; margin-bottom:20px;"><p class="eyebrow">Verification tiers</p></div>
+      <div class="tier-grid reveal">
+        <div class="tier-card"><div class="tier-n">TIER 0</div><h4>Can build</h4><p>Store creation only — cannot accept live payments.</p></div>
+        <div class="tier-card"><div class="tier-n">TIER 1</div><h4>Can sell</h4><p>Bank account name-match + phone OTP. Appears in discovery, eligible for trial.</p></div>
+        <div class="tier-card"><div class="tier-n">TIER 2</div><h4>Verified Business</h4><p>CAC-verified — earns the "Verified Business" badge.</p></div>
+      </div>
+
+      <div class="section-head reveal" style="margin-top:56px; margin-bottom:20px;"><p class="eyebrow">Two enforcement tracks</p></div>
+      <div class="reveal">
+        <div class="track-label">Circumvention — graduated</div>
+        <div class="ladder">
+          <div class="ladder-step"><div class="ladder-num">01</div><div><h4>Educational notice</h4><p>Friendly, specific note on what to change.</p></div></div>
+          <div class="ladder-step"><div class="ladder-num">02</div><div><h4>Formal warning email</h4><p>Kept as a record.</p></div></div>
+          <div class="ladder-step"><div class="ladder-num">03</div><div><h4>Removed from discovery</h4><p>30 days, store keeps working.</p></div></div>
+          <div class="ladder-step"><div class="ladder-num">04</div><div><h4>Store suspended</h4><p>No new orders; existing orders still fulfilled.</p></div></div>
+          <div class="ladder-step"><div class="ladder-num">05</div><div><h4>Permanent ban + blocklist</h4><p>Bank account and phone blocked from re-registering.</p></div></div>
+        </div>
+        <div class="track-label">Fraud — fast track</div>
+        <div class="ladder">
+          <div class="ladder-step fast"><div class="ladder-num">FT</div><div><h4>Suspension pending review</h4><p>Non-delivery, fake goods, or scam reports skip straight here.</p></div></div>
+        </div>
+      </div>
+      <p class="reveal" style="font-size:14.5px; color:var(--ink-muted); max-width:70ch;">Every action notifies the vendor with a reason and an appeal window. No money-based penalties — funds settle directly to vendors, and ToS must not claim payout holds as a penalty tool. The only sanctioned hold is the 24–48h bank-change security hold. Disputes: buyer may dispute within 7 days of delivery confirmation; unresolved after 5 days auto-flags the vendor. Refunds are vendor-initiated through Flutterwave, full amount only.</p>
+    </div>
+  </section>
+
+  <!-- ===================== DATA MODEL + ADMIN ===================== -->
+  <section id="data-model">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">§6–7 · Data model & admin panel</p>
+        <h2>Every table, grouped by domain</h2>
+        <p>Money is integer kobo everywhere. Every table has <code>created_at</code>; every vendor-scoped table has <code>store_id</code> and an RLS policy. Search or filter by domain below.</p>
+      </div>
+      <div class="filter-bar reveal">
+        <input type="search" id="dataSearch" placeholder="Search a table…">
+        <div class="chip-scroll" id="dataChipScroll"><button class="chip active" data-theme="all">All domains</button></div>
+      </div>
+      <div id="dataList"></div>
+
+      <div class="section-head reveal" style="margin-top:64px; margin-bottom:28px;">
+        <p class="eyebrow">Admin build stages</p>
+        <h2>Built in stages, staff roles from day one</h2>
+        <p>Roles exist from the start — Super Admin, Support, Moderator, Finance — even with a single user, so adding staff later needs no rewrite. Every action is logged in an immutable audit log.</p>
+      </div>
+      <div class="stage-grid reveal">
+        <div class="stage-card"><span class="stage-tag">A0</span><h4>Admin-lite</h4><p>2FA login, read-only orders/payments/webhook-events, audit log foundation.</p><div class="stage-when">Phase 3–4</div></div>
+        <div class="stage-card"><span class="stage-tag">A1</span><h4>Launch-critical</h4><p>Vendor/store search, verification queue, flag/warn/suspend/ban, disputes queue, plan/settings editor.</p><div class="stage-when">Phase 8</div></div>
+        <div class="stage-card"><span class="stage-tag">A2</span><h4>Operations</h4><p>Cases, appeals, health dashboard, reconciliation, timed & bulk actions, extra staff roles.</p><div class="stage-when">Post-launch</div></div>
+        <div class="stage-card"><span class="stage-tag">A3</span><h4>Scale</h4><p>Finance exports, data-request tooling, announcements, advanced analytics.</p><div class="stage-when">Later</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DESIGN ===================== -->
+  <section id="design">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">§8 · Design system summary</p>
+        <h2>Premium and distinctly Nigerian — never generic SaaS</h2>
+        <p>Full detail lives in <code>design.md</code>; this is the Level 1 pointer.</p>
+      </div>
+      <div class="swatch-row reveal">
+        <div class="swatch"><div class="sw-box" style="background:#F7F4EF;"></div><div class="sw-label">Cream</div><div class="sw-hex">#F7F4EF</div></div>
+        <div class="swatch"><div class="sw-box" style="background:#1C1B1A;"></div><div class="sw-label">Near-black</div><div class="sw-hex">#1C1B1A</div></div>
+        <div class="swatch"><div class="sw-box" style="background:#C1592B;"></div><div class="sw-label">Terracotta</div><div class="sw-hex">#C1592B (sparing use only)</div></div>
+      </div>
+      <div class="rule-grid reveal">
+        <div class="rule-chip"><strong>Typography</strong>Clash Display for headings, Inter for body/UI — fixed type scale, no page invents its own sizes.</div>
+        <div class="rule-chip"><strong>Motion</strong>Snappy only, 100–200ms. Signature ring-mark loader.</div>
+        <div class="rule-chip"><strong>No SaaS defaults</strong>No component-library look, no SaaS blue/purple gradients, no emoji as UI elements.</div>
+        <div class="rule-chip"><strong>No generic dashboards</strong>No literal shopping cart/bag icons (use the ring/cycle motif), no generic "four metric cards" opener.</div>
+        <div class="rule-chip"><strong>Trust badge</strong>Consistent everywhere it appears, regardless of template.</div>
+        <div class="rule-chip"><strong>Dashboard visuals</strong>Sleek.design is dropped — ChatGPT image generation produces reference, Codex builds directly in code.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PHASES ===================== -->
+  <section id="phases">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">§9 · Phases</p>
+        <h2>Eleven phases, each ending in a scripted checkpoint</h2>
+        <p>No phase begins until the previous one's checkpoint passes. Tap a phase to expand it.</p>
+      </div>
+      <div id="phaseList" class="reveal"></div>
+    </div>
+  </section>
+
+  <!-- ===================== RULES ===================== -->
+  <section id="rules">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">§10–13 · Working rules & open items</p>
+        <h2>Rules for every coding agent</h2>
+      </div>
+      <ul class="numbered-list reveal" id="rulesList"></ul>
+
+      <div class="section-head reveal" style="margin-top:56px; margin-bottom:24px;">
+        <p class="eyebrow">§11–12 · Tooling & start-now tasks</p>
+        <h2>Sessions, not tokens</h2>
+        <p>Codex runs via ChatGPT Plus — a usage-limited plan, not pay-per-token credits. Budgeting is about sessions and time. Task cards start modest and self-contained; reserve the most careful cards for Phases 0, 3, 4 and 8.</p>
+      </div>
+      <div class="two-col-list reveal">
+        <div>
+          <h4>Start now — long lead time</h4>
+          <ul>
+            <li>Flutterwave: confirm split payments/sub-accounts approved for a marketplace; confirm KYB docs</li>
+            <li>Termii: sender ID approval; WhatsApp Business API application</li>
+            <li>Resend: domain DNS (SPF/DKIM)</li>
+            <li>Vercel: paid plan; confirm wildcard-subdomain setup</li>
+            <li>Supabase: confirm backup coverage on the chosen plan</li>
+            <li>Legal (begins once live): vendor terms, Marketplace Rules, funds-model review, NDPA privacy policy</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Recurring costs to track</h4>
+          <ul>
+            <li>Vercel paid plan</li>
+            <li>Supabase paid tier (for backups)</li>
+            <li>SMS spend (Termii)</li>
+            <li>Domain renewal</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-head reveal" style="margin-top:56px; margin-bottom:20px;">
+        <p class="eyebrow">§13 · Open items carried into Level 2</p>
+      </div>
+      <div class="open-tags reveal">
+        <div class="open-item">Exact design tokens — type scale, spacing, radius, shadow, status colors, error-red hex</div>
+        <div class="open-item">Monthly SMS/WhatsApp allowances for Venture & Apex</div>
+        <div class="open-item">Exact analytics metric definitions</div>
+        <div class="open-item">Support-response targets</div>
+        <div class="open-item">Enforcement thresholds — chat-tap ratio, minimum sample sizes</div>
+        <div class="open-item">Detailed DDL and RLS policies per table</div>
+        <div class="open-item">Style questionnaire content</div>
+        <div class="open-item">Data retention and deletion periods</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-row">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:20px;"><path d="M373.365 298.797C338.815 358.695 274.116 399.012 200 399.012C128.699 399.012 66.1149 361.699 30.7021 305.536L82.7246 275.501C107.717 313.742 150.907 339.012 200 339.012C251.91 339.012 297.22 310.759 321.396 268.792L373.365 298.797ZM180 60.4316C112.154 70.1364 60 128.482 60 199.012C60 212.934 62.0332 226.382 65.8174 239.075L12.8379 269.663C4.54108 247.695 0 223.884 0 199.012C0 95.3048 78.9336 10.0345 180 0V60.4316ZM220 0C321.066 10.0345 400 95.3048 400 199.012C400 221.064 396.43 242.281 389.838 262.12L336.279 231.198C338.711 220.864 340 210.088 340 199.012C340 128.482 287.846 70.1364 220 60.4316V0Z" fill="#1C1B1A"/><path d="M199.5 107C220.868 107 240.542 114.247 256.203 126.415L232.58 150.038C223.12 143.699 211.743 140 199.5 140C166.639 140 140 166.639 140 199.5C140 232.361 166.639 259 199.5 259C232.361 259 259 232.361 259 199.5C259 187.935 255.7 177.141 249.991 168.008L273.717 144.282C285.202 159.693 292 178.803 292 199.5C292 250.586 250.586 292 199.5 292C148.414 292 107 250.586 107 199.5C107 148.414 148.414 107 199.5 107Z" fill="#C1592B"/></svg>
+      <span>Cartiphy</span>
+    </a>
+    <div class="footer-links">
+      <a href="index.html">← Back to Product</a>
+    </div>
+    <p class="footer-note">Level 1 Master Plan — supersedes all earlier build-plan drafts. Read alongside <code>design.md</code>.</p>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('load', ()=>{ setTimeout(()=>document.getElementById('loader').classList.add('hide'), 350); });
+
+const menuBtn = document.getElementById('menuBtn');
+const sideMenu = document.getElementById('side-menu');
+const overlay = document.getElementById('overlay');
+function closeMenu(){ menuBtn.classList.remove('open'); menuBtn.setAttribute('aria-expanded','false'); sideMenu.classList.remove('open'); overlay.classList.remove('show'); }
+menuBtn.addEventListener('click', ()=>{ const isOpen = sideMenu.classList.toggle('open'); menuBtn.classList.toggle('open', isOpen); menuBtn.setAttribute('aria-expanded', isOpen); overlay.classList.toggle('show', isOpen); });
+overlay.addEventListener('click', closeMenu);
+sideMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click', closeMenu));
+
+const ring = document.getElementById('progress-ring');
+const fillCircle = ring.querySelector('.fill');
+const CIRC = 106.8;
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const pct = (h.scrollHeight - h.clientHeight) > 0 ? h.scrollTop / (h.scrollHeight - h.clientHeight) : 0;
+  fillCircle.style.strokeDashoffset = CIRC - (CIRC * pct);
+  ring.classList.toggle('show', h.scrollTop > 200);
+});
+
+const io = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+document.querySelectorAll('.tab-btn').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    const scope = tab.closest('section');
+    scope.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    scope.querySelectorAll('.tab-view').forEach(v=>v.classList.remove('active'));
+    scope.querySelector('#tab-'+tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ---------- Quick reference table ----------
+const refData = [
+  {k:"Name / domain", v:"Cartiphy, cartiphy.com"},
+  {k:"Stack", v:"Next.js + Supabase (Postgres, Auth, Storage) + Vercel (paid) + Cloudinary + Flutterwave + Termii (SMS/WhatsApp) + Resend (email)"},
+  {k:"Coding agent", v:"Codex via ChatGPT Plus — usage-limited, not metered API credits"},
+  {k:"Storefront rendering", v:"Server-rendered templates (vanilla HTML/CSS/JS with placeholders); data injected server-side; platform.js handles interactivity only"},
+  {k:"Cart", v:"Server-side, keyed by httpOnly cookie ID"},
+  {k:"Single-product stores", v:"Share the same cart infrastructure. \"Buy Now\" silently creates a 1-item cart and skips to checkout — no separate checkout system"},
+  {k:"Subdomains", v:"store.cartiphy.com — lowercase alphanumeric + hyphens, 3–30 chars, reserved-word blocklist"},
+  {k:"Products", v:"Flat: name, price, stock, images, category. No variant system"},
+  {k:"Store type", v:"Single-product or multi-product, vendor-chosen"},
+  {k:"Store status enum", v:"draft → pending_verification → live → suspended → banned → closed"},
+  {k:"Money", v:"Integer kobo everywhere. NGN only"},
+  {k:"Payments", v:"Flutterwave sub-accounts (split payments). No escrow at launch"},
+  {k:"Vendor payouts", v:"No in-app withdrawal, no Cartiphy-held balance. Flutterwave settles directly on its own schedule. Dashboard shows earnings history, not a wallet"},
+  {k:"Fee bearing", v:"Seller bears Flutterwave's processing fee"},
+  {k:"Commission cap", v:"None at launch. Flat percentage only — revisit once transaction data exists"},
+  {k:"Bank account changes", v:"Allowed but treated as a security event: re-verification, logged change, immediate notification, 24–48h payout hold on the new account"},
+  {k:"Delivery", v:"Off-platform. Vendor sets a flat delivery fee per store (₦0 = free)"},
+  {k:"Refunds", v:"Full refunds only at launch — no partial refunds"},
+  {k:"Buyer confirmation", v:"Tokenized no-login link, 72h auto-confirm. Unlocks verified reviews, closes dispute window"},
+  {k:"Reviews", v:"Verified purchase only — completed on-platform orders"},
+  {k:"Discovery", v:"Platform-wide; only Tier 1+ verified vendors surfaced; ranking blends verified+rated with newest; no pay-to-rank"},
+  {k:"WhatsApp", v:"Pre-purchase \"Ask a question\" button only; full vendor contact revealed after payment"},
+  {k:"Categories (v1)", v:"Fashion & Apparel · Beauty & Personal Care · Food & Groceries · Electronics & Gadgets · Home & Living · Health & Wellness · Kids & Baby · Jewelry & Accessories · Arts, Crafts & Handmade · Other"},
+  {k:"Templates", v:"3–5 commerce-ready templates at launch, chosen via a style questionnaire. AI-assisted selection deferred until ~15–20 templates exist"},
+  {k:"Template design rules", v:"Checkout, order confirmation, and the trust badge are Cartiphy-owned components embedded in every template"},
+  {k:"Dashboard visuals", v:"Sleek.design dropped — ChatGPT image generation produces reference, Codex builds directly in code"},
+  {k:"Compliance groundwork", v:"Lawyer review, NDPA privacy policy, CAC considerations — addressed after the product is live, not before launch"},
+];
+const refTable = document.getElementById('refTable');
+function renderRef(list){
+  refTable.innerHTML = list.map(r=>`<tr><td>${r.k}</td><td>${r.v}</td></tr>`).join('');
+}
+renderRef(refData);
+document.getElementById('refSearch').addEventListener('input', (e)=>{
+  const q = e.target.value.toLowerCase().trim();
+  renderRef(refData.filter(r => r.k.toLowerCase().includes(q) || r.v.toLowerCase().includes(q)));
+});
+
+// ---------- Pricing matrix ----------
+const pricingRows = [
+  {feature:"Monthly price", prime:"Free", venture:"₦12,000", apex:"₦28,000", isPrice:true},
+  {feature:"Cartiphy commission", prime:"4%", venture:"2%", apex:"1%"},
+  {feature:"Products", prime:"25", venture:"250", apex:"Unlimited"},
+  {feature:"Images per product", prime:"3", venture:"6", apex:"10"},
+  {feature:"Bulk CSV upload", prime:"no", venture:"yes", apex:"yes"},
+  {feature:"Templates", prime:"3 core", venture:"All", apex:"All + early access"},
+  {feature:"\"Sold on Cartiphy\" footer badge", prime:"Shown", venture:"Removable", apex:"Removable"},
+  {feature:"Buyer discount codes", prime:"no", venture:"Unlimited", apex:"Unlimited + automatic"},
+  {feature:"Abandoned carts", prime:"Count only", venture:"List + click-to-chat", apex:"+ automated recovery (later)"},
+  {feature:"Analytics", prime:"This month", venture:"90 days: trends, top products, traffic", apex:"Full history, repeat customers, CSV export"},
+  {feature:"Order export", prime:"no", venture:"yes", apex:"yes"},
+  {feature:"SMS/WhatsApp broadcasts", prime:"no", venture:"Monthly allowance (TBD)", apex:"Larger allowance (TBD)"},
+  {feature:"Staff accounts", prime:"no", venture:"no", apex:"Yes (later)"},
+  {feature:"Custom domain", prime:"no", venture:"no", apex:"Yes (later)"},
+  {feature:"Support", prime:"Help center + email", venture:"WhatsApp, business hours", apex:"Priority queue"},
+];
+function cell(v){
+  if(v==="yes") return '<span class="yes">Yes</span>';
+  if(v==="no") return '<span class="no">—</span>';
+  return v;
+}
+const matrixHTML = `
+<thead><tr><th>Feature</th><th class="col-plan">Prime</th><th class="col-plan plan-best-col">Venture</th><th class="col-plan">Apex</th></tr></thead>
+<tbody>
+${pricingRows.map(r=>`<tr${r.isPrice?' class="price-row"':''}><td class="feature-name">${r.feature}</td><td class="col-plan">${cell(r.prime)}</td><td class="col-plan plan-best-col">${cell(r.venture)}</td><td class="col-plan">${cell(r.apex)}</td></tr>`).join('')}
+</tbody>`;
+document.getElementById('pricingMatrix').innerHTML = matrixHTML;
+
+// ---------- Data model explorer ----------
+const dataTables = [
+  {domain:"Identity", name:"vendors", desc:"Vendor accounts — profile, bank account, verification tier."},
+  {domain:"Identity", name:"customers", desc:"Platform-wide buyer accounts, including an is_guest flag."},
+  {domain:"Identity", name:"admin_users", desc:"Internal platform admin accounts."},
+  {domain:"Identity", name:"tos_acceptances", desc:"Versioned Terms of Service / Marketplace Rules acceptance records."},
+  {domain:"Identity", name:"blocklist", desc:"Banned bank account hashes and phone numbers, blocked from re-registering."},
+  {domain:"Stores & catalog", name:"stores", desc:"store_type, subdomain, category, template_id, status, standing."},
+  {domain:"Stores & catalog", name:"store_settings", desc:"Per-store configuration (delivery fee, badge visibility, etc)."},
+  {domain:"Stores & catalog", name:"products", desc:"Flat product records: name, price, stock, images, category."},
+  {domain:"Stores & catalog", name:"product_images", desc:"Images per product, entitlement-capped by plan."},
+  {domain:"Stores & catalog", name:"templates", desc:"The curated template library vendors choose from."},
+  {domain:"Commerce", name:"carts / cart_items", desc:"Server-side cart, keyed by httpOnly cookie ID."},
+  {domain:"Commerce", name:"orders / order_items", desc:"Created only on a verified payment webhook, never client-side."},
+  {domain:"Commerce", name:"order_status_history", desc:"Full status-transition trail for each order."},
+  {domain:"Commerce", name:"customer_addresses", desc:"Buyer delivery addresses."},
+  {domain:"Commerce", name:"discount_codes", desc:"Buyer-facing discount codes, gated by plan (Venture/Apex)."},
+  {domain:"Payments", name:"payments", desc:"Flutterwave payment records tied to orders."},
+  {domain:"Payments", name:"webhook_events", desc:"Idempotent webhook log — prevents duplicate order creation."},
+  {domain:"Payments", name:"refunds", desc:"Vendor-initiated, full-amount-only refund records."},
+  {domain:"Trust", name:"reviews", desc:"Verified-purchase-only reviews and ratings."},
+  {domain:"Trust", name:"disputes", desc:"Buyer disputes — 7-day window, auto-flagged at day 5."},
+  {domain:"Trust", name:"reports", desc:"Buyer/vendor reports on listings, stores, or orders."},
+  {domain:"Trust", name:"risk_flags", desc:"Nightly risk-scoring job output, sent to the admin queue."},
+  {domain:"Trust", name:"enforcement_actions", desc:"The graduated ladder and fast-track actions taken against a vendor."},
+  {domain:"Trust", name:"appeals", desc:"Vendor appeals against enforcement actions."},
+  {domain:"Billing", name:"plans / plan_entitlements", desc:"The single source of truth for what each plan unlocks — never hardcoded if/else."},
+  {domain:"Billing", name:"subscriptions", desc:"Vendor subscription state, billing cycle."},
+  {domain:"Billing", name:"promo_codes", desc:"Subscription-level promo codes."},
+  {domain:"Billing", name:"trials", desc:"14-day Venture trial tracking, gated to one per phone/bank account."},
+  {domain:"Analytics & ops", name:"store_events", desc:"view, cart_add, chat_tap — tagged by source: discovery or direct."},
+  {domain:"Analytics & ops", name:"notification_log", desc:"Every SMS/email sent, for delivery auditing."},
+  {domain:"Analytics & ops", name:"audit_log", desc:"Immutable log of every admin action — who, what, when, old/new value."},
+  {domain:"Admin", name:"admin_roles", desc:"Super Admin, Support, Moderator, Finance — from day one."},
+  {domain:"Admin", name:"cases / case_notes", desc:"Groups flags, reports, disputes and messages for a single issue."},
+  {domain:"Admin", name:"message_templates", desc:"Templated vendor communications for enforcement actions."},
+  {domain:"Admin", name:"template_versions", desc:"Version history for the storefront template library."},
+  {domain:"Admin", name:"platform_settings / settings_history", desc:"Every editable platform value, with a change history."},
+  {domain:"Admin", name:"feature_flags", desc:"Runtime feature toggles."},
+  {domain:"Admin", name:"content_rules", desc:"Content-scanner rules for prohibited listing text."},
+  {domain:"Admin", name:"policy_versions", desc:"ToS / Marketplace Rules versioning, forces re-acceptance."},
+  {domain:"Admin", name:"verification_reviews", desc:"Tier 1/2 verification review queue."},
+  {domain:"Admin", name:"announcements", desc:"Platform-wide vendor announcements."},
+  {domain:"Admin", name:"data_requests", desc:"NDPA-aligned data access/deletion requests."},
+];
+const dataThemes = ["all", ...new Set(dataTables.map(d=>d.domain))];
+const dataChipScroll = document.getElementById('dataChipScroll');
+dataThemes.slice(1).forEach(t=>{ const c=document.createElement('button'); c.className='chip'; c.dataset.theme=t; c.textContent=t; dataChipScroll.appendChild(c); });
+const dataList = document.getElementById('dataList');
+function renderDataList(){
+  dataList.innerHTML = '';
+  const grouped = {};
+  dataTables.forEach(d=>{ (grouped[d.domain]=grouped[d.domain]||[]).push(d); });
+  Object.keys(grouped).forEach(domain=>{
+    const group = document.createElement('div'); group.className='theme-group'; group.dataset.theme=domain;
+    const h = document.createElement('div'); h.className='theme-title'; h.textContent=domain; group.appendChild(h);
+    grouped[domain].forEach(d=>{
+      const row = document.createElement('div');
+      row.className='decision-row'; row.dataset.theme=domain; row.dataset.title=(d.name+' '+d.desc).toLowerCase();
+      row.innerHTML = `<div class="decision-head"><span class="d-title"><code>${d.name}</code></span><svg class="chevron" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6"/></svg></div><div class="decision-body"><div class="decision-body-inner">${d.desc}</div></div>`;
+      row.addEventListener('click', ()=>row.classList.toggle('open'));
+      group.appendChild(row);
+    });
+    dataList.appendChild(group);
+  });
+}
+renderDataList();
+dataChipScroll.addEventListener('click', (e)=>{
+  const chip = e.target.closest('.chip'); if(!chip) return;
+  dataChipScroll.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  const theme = chip.dataset.theme;
+  document.querySelectorAll('#dataList .theme-group').forEach(g=>{ g.style.display = (theme==='all'||g.dataset.theme===theme) ? '' : 'none'; });
+});
+document.getElementById('dataSearch').addEventListener('input', (e)=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#dataList .decision-row').forEach(row=>{
+    row.classList.toggle('hidden', q.length>0 && !row.dataset.title.includes(q));
+  });
+  document.querySelectorAll('#dataList .theme-group').forEach(g=>{
+    const visible = [...g.querySelectorAll('.decision-row')].some(r=>!r.classList.contains('hidden'));
+    if(q.length>0) g.style.display = visible ? '' : 'none';
+  });
+});
+
+// ---------- Phases accordion ----------
+const phases = [
+  {n:"0", title:"Foundations and security baseline", sub:"Repo, environments, core schema, RLS", body:"Repo, Vercel (paid), separate staging/production Supabase projects, env var map (Flutterwave test/live keys), migrations via Supabase CLI in git, Sentry, backups confirmed. Core schema with RLS, roles, plans/plan_entitlements seed, store_events table. Sandbox accounts: Flutterwave, Termii, Resend, Cloudinary.", checkpoint:"Deployed skeleton; cross-tenant RLS test passes; keys verified."},
+  {n:"1", title:"Vendor and store core", sub:"Onboarding, product CRUD, subdomains", body:"Vendor auth (email + phone), ToS/Marketplace Rules acceptance gate. Onboarding wizard: store name, category, single/multi-product, style questionnaire → template pick. Product CRUD with entitlement caps; images via Cloudinary; content-scanner friendly block on listing text. CSV bulk upload (entitlement-gated) with row-level error reporting. Subdomain validation, reservation, routing. A minimal vendor dashboard shell.", checkpoint:"Vendor signs up, creates a store, adds products, sees the live subdomain."},
+  {n:"2", title:"Storefront rendering and cart", sub:"Templates, cart, SEO/OG", body:"Template engine (server-side placeholder filling); commerce slots: product grid, product detail, cart, checkout shell, confirmation. platform.js SDK; server-side cart via cookie. Single-product \"Buy Now\" path reusing the same cart infrastructure. 3–5 commerce-ready templates; SEO and OG tags per store. Event tracking (view, cart_add, chat_tap, source); \"Ask a question\" WhatsApp button; footer badge gating. Guest capture (email/phone → lightweight customer record).", checkpoint:"Buyer browses a real store, cart survives refresh, events recorded, link preview renders correctly for both store types."},
+  {n:"3", title:"Payments", sub:"Highest risk — use the strongest model here", body:"Tier 1 verification: bank account name-match and phone OTP; sub-account creation. Flutterwave checkout with split (commission), delivery fee, seller-borne fee. Verified webhook handler, idempotent via webhook_events. Atomic stock decrement; order and order_items on confirmed payment only. Admin-lite (A0): 2FA login, read-only orders/payments/webhook-events viewer, audit log foundation.", checkpoint:"Sandbox payment → webhook → order → stock decrement → vendor sees order in dashboard; duplicate webhook is harmless; concurrent last-item purchase test passes."},
+  {n:"4", title:"Order lifecycle and trust mechanics", sub:"Status machine, confirmation, disputes", body:"Status machine with history: Placed → Confirmed → Out for Delivery → Awaiting Confirmation → Delivered / Disputed / Cancelled. Tokenized buyer confirmation link, 72h auto-confirm; vendor contact reveal after payment. Disputes (7-day window, 5-day auto-flag), vendor-initiated full refunds via Flutterwave. Verified-purchase reviews and rating aggregation; vendor standing indicator. Bank-account-change flow (re-verification, logging, 24–48h hold).", checkpoint:"Full happy path, disputed path, auto-confirm path, and a bank-change event all run correctly end to end."},
+  {n:"5", title:"Notifications", sub:"SMS and email across every order event", body:"Termii SMS for all buyer-facing order events (always included, not plan-gated); Resend for auth, receipts, formal notices; notification_log.", checkpoint:"Every Phase 4 transition sends the right message exactly once."},
+  {n:"6", title:"Discovery and insights", sub:"Search, ranking, analytics", body:"Global index, category pages, search (Postgres full-text), store profiles. Ranking: verified + rated, blended with newest; Tier 1+ eligibility only. Vendor analytics by plan; abandoned-cart visibility by plan (count vs. list with click-to-chat).", checkpoint:"Discovery homepage shows real, eligible stores with sensible ranking; analytics respect entitlements."},
+  {n:"7", title:"Monetization and growth tools", sub:"Billing, trials, discount codes", body:"Flutterwave subscription billing (monthly and annual), Venture trial rules, fallback to Prime, gentle downgrade. Subscription promo codes; commission-savings meter and upgrade prompts. Buyer discount codes (Venture/Apex); order export.", checkpoint:"Trial → paid, trial → Prime fallback, promo applied, commission correct at each plan."},
+  {n:"8", title:"Moderation, enforcement and admin", sub:"Full admin panel (A1)", body:"Full admin panel (A1): vendor/store search, verification queue, disputes, flagged content, risk queue, templated email/SMS with actions, settings editor, audit log UI. Report button (listings/stores/orders); nightly risk-scoring job; enforcement ladder with notifications, appeals, blocklist.", checkpoint:"Flagged store reviewed, warned, restricted from discovery, suspended; blocked bank/phone cannot re-register."},
+  {n:"9", title:"Launch readiness", sub:"Legal, security, soft launch", body:"Lawyer review of vendor terms and Marketplace Rules; NDPA privacy policy; confirm no raw card data touches Cartiphy. Security review pass, backup restore test, monitoring alerts, full end-to-end run, soft launch with a small vendor cohort. Per §2, compliance/legal groundwork begins once the product is functionally live — read as \"start once live,\" not \"block launch on.\"", checkpoint:"Soft launch with a small, real vendor cohort completes end to end."},
+  {n:"10", title:"Post-launch backlog", sub:"Everything deliberately deferred", body:"Custom domains, staff accounts, automated cart recovery, zone-based delivery fees, AI template selection, dark mode, Services category, multi-store owners, escrow (only after Flutterwave/legal clarity), expanded template library, Apex commission cap (if data supports it), partial refunds (if needed).", checkpoint:"No fixed checkpoint — items graduate into future phases as data and demand justify them."},
+];
+const phaseList = document.getElementById('phaseList');
+phases.forEach(p=>{
+  const card = document.createElement('div'); card.className='phase-card';
+  card.innerHTML = `
+    <div class="phase-head">
+      <div class="phase-num">${p.n}</div>
+      <div class="phase-head-text"><h4>${p.title}</h4><div class="phase-sub">${p.sub}</div></div>
+      <svg class="chevron" width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.6"/></svg>
+    </div>
+    <div class="phase-body"><div class="phase-body-inner"><p>${p.body}</p><div class="phase-checkpoint"><strong>Checkpoint —</strong> ${p.checkpoint}</div></div></div>
+  `;
+  const head = card.querySelector('.phase-head');
+  const body = card.querySelector('.phase-body');
+  head.addEventListener('click', ()=>{
+    const isOpen = card.classList.toggle('open');
+    body.style.maxHeight = isOpen ? body.scrollHeight + 'px' : '0px';
+  });
+  phaseList.appendChild(card);
+});
+
+// ---------- Working rules ----------
+const rules = [
+  "Read this file, design.md, and the relevant Level 2 doc before any task; never invent tokens, plans, states, or copy.",
+  "Build one vertical slice at a time; finish and pass the checkpoint before starting the next phase.",
+  "Money is integer kobo; never floats.",
+  "Every table gets RLS at creation; never ship a table without a policy.",
+  "Payment and webhook code gets extra scrutiny and tests — the highest-risk surface in the product.",
+  "Use the entitlements config for any plan-based behavior; never hardcode if plan === ....",
+  "Do not add features not listed here; add proposals to the Phase 10 backlog instead.",
+  "When stuck (especially in Phase 3–4 logic), stop and escalate for a second opinion rather than guessing or brute-forcing a fix.",
+];
+document.getElementById('rulesList').innerHTML = rules.map(r=>`<li><span class="num"></span><p>${r}</p></li>`).join('');
+</script>
+</body>
+</html>
