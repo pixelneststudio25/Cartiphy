@@ -33,9 +33,9 @@ No custom HTML/CSS/JS, no custom colors, no custom layout sections at launch. Th
 
 Per Level 1 §4, storefronts are server-rendered for SEO and link-preview quality. In detail:
 
-1. Request hits `store.cartiphy.com` (wildcard domain, DNS already covered in Level 1 §12's start-now tasks).
-2. Next.js middleware reads the host header and resolves it to a `stores` row.
-3. **Store status check happens here, before anything else renders:**
+1. Request hits `*.cartiphy.com` (wildcard domain, DNS already covered in Level 1 §12's start-now tasks).
+2. Next.js middleware reads the host header. **Reserved subdomains are checked first:** `vendor.` routes to the vendor dashboard/login route group, `admin.` routes to the admin panel, `discover.` routes to the buyer discovery/account route group. Any other subdomain is resolved as a vendor store lookup against the `stores` table.
+3. **Store status check happens here (for store subdomains only), before anything else renders:**
    - `draft` or `pending_verification` → render a public "coming soon" page (§4). Never a 404, never the real storefront.
    - `suspended` or `banned` → render a neutral "this store is currently unavailable" page — no reference to enforcement details (that stays internal).
    - `closed` → same neutral unavailable treatment.
@@ -104,7 +104,8 @@ This creates the lightweight guest `customers` record referenced in Level 1 §1 
 
 - **Phone-OTP login, passwordless.** No password field, no password reset flow.
 - Consistent with how vendor authentication already treats phone verification as a first-class credential, and better suited to a mobile-first Nigerian buyer base than password-based accounts.
-- A registered buyer's order history, saved addresses (if any), and delivery-confirmation actions all live behind this same phone-OTP session.
+- A registered buyer's account, order history, saved addresses (if any), and delivery-confirmation actions live under **`discover.cartiphy.com`** (e.g., `discover.cartiphy.com/account`, `/orders`) — grouped with the buyer-facing discovery surface rather than scattered across individual store subdomains.
+- The session cookie is set at the parent domain scope (`.cartiphy.com`, per Level 1's cross-subdomain sessions decision), so a buyer who logs in on `discover.cartiphy.com` is still recognized while browsing an individual store's subdomain — useful for a consistent "logged in" state even though guest checkout never requires it.
 
 ---
 

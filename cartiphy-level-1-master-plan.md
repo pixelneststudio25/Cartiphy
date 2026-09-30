@@ -23,10 +23,12 @@ Cartiphy is a Nigeria-first ecommerce store-builder platform. Vendors self-serve
 | Name / domain | Cartiphy, cartiphy.com |
 | Stack | Next.js + Supabase (Postgres, Auth, Storage) + Vercel (paid plan) + Cloudinary + Flutterwave + Termii (SMS/WhatsApp) + Resend (email) |
 | Coding agent | Codex via ChatGPT Plus subscription (usage-limited, not metered API credits — see §10) |
+| App architecture | One Next.js app in a single repo serves everything dynamic: vendor dashboard/login (`vendor.cartiphy.com`), admin panel (`admin.cartiphy.com`), buyer discovery/account (`discover.cartiphy.com`), and every vendor storefront (wildcard `*.cartiphy.com`) — all resolved by host-based middleware routing, reserved subdomains checked first. The marketing site (homepage, pricing, about, how-it-works, 404) is a **separate static HTML/CSS/JS site** at the apex domain (`cartiphy.com` / `www.cartiphy.com`), built and hosted independently, but still bound by `design.md`'s tokens and anti-generic rules — a different tech stack doesn't exempt it from the same brand consistency bar |
+| Cross-subdomain sessions | Vendor and buyer auth cookies are set at the parent domain scope (`.cartiphy.com`), so a logged-in session is recognized consistently across `vendor.`, `admin.`, `discover.`, and every individual store subdomain |
 | Storefront rendering | Server-rendered templates (vanilla HTML/CSS/JS with placeholders); data injected server-side; `platform.js` handles interactivity only |
 | Cart | Server-side, keyed by httpOnly cookie ID |
 | Single-product stores | Share the same cart infrastructure as multi-product stores. "Buy Now" silently creates a 1-item cart and skips straight to checkout — no separate checkout system |
-| Subdomains | `store.cartiphy.com`, lowercase alphanumeric + hyphens, 3–30 chars, reserved-word blocklist |
+| Subdomains | Vendor stores use the wildcard pattern `*.cartiphy.com`; lowercase alphanumeric + hyphens, 3–30 chars. Reserved-word blocklist explicitly includes infrastructure subdomains — `vendor`, `admin`, `discover`, `api`, `www`, `app`, `dashboard`, `support` — none of which can ever be claimed as a vendor store name |
 | Products | Flat: name, price, stock, images, category. No variant system (vendors create separate products per variant) |
 | Store type | Single-product or multi-product, vendor-chosen (`stores.store_type`) |
 | Store status enum | `draft → pending_verification → live → suspended → banned → closed` |
@@ -198,7 +200,7 @@ content-scanner hits · buyer reports · chat-tap-to-order ratio vs. platform me
 Each phase ends with a **scripted checkpoint** that must pass before the next phase begins.
 
 ### Phase 0 — Foundations and security baseline
-Repo, Vercel (paid), separate staging/production Supabase projects, env var map (Flutterwave test/live keys), migrations via Supabase CLI in git, Sentry, backups confirmed. Core schema with RLS, roles, `plans`/`plan_entitlements` seed, `store_events` table. Sandbox accounts: Flutterwave, Termii, Resend, Cloudinary.
+Repo (single Next.js app handling vendor dashboard, admin panel, buyer discovery, and all store subdomains via host-based middleware routing; marketing site is a separate static project, deployed independently), Vercel (paid), separate staging/production Supabase projects, env var map (Flutterwave test/live keys), migrations via Supabase CLI in git, Sentry, backups confirmed. Core schema with RLS, roles, `plans`/`plan_entitlements` seed, `store_events` table. Sandbox accounts: Flutterwave, Termii, Resend, Cloudinary.
 **Checkpoint:** deployed skeleton; cross-tenant RLS test passes; keys verified.
 
 ### Phase 1 — Vendor and store core
@@ -270,7 +272,7 @@ Custom domains, staff accounts, automated cart recovery, zone-based delivery fee
 - Flutterwave: confirm split payments/sub-accounts are approved for your business account as a marketplace; confirm KYB documents required.
 - Termii: sender ID approval; WhatsApp Business API application.
 - Resend: domain DNS (SPF/DKIM).
-- Vercel: paid plan; confirm wildcard-subdomain setup.
+- Vercel: paid plan; confirm wildcard-subdomain setup (`*.cartiphy.com` → the Next.js app), and that apex/`www` DNS records point instead to the separately-hosted static marketing site so the wildcard doesn't swallow it.
 - Supabase: confirm backup coverage on the chosen plan.
 - Legal (scheduled to begin once the product is live, per §2): Nigerian lawyer for vendor terms, Marketplace Rules, and funds-model review; NDPA-aligned privacy policy; accountant on VAT for Cartiphy's subscription and commission income.
 

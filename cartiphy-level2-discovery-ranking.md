@@ -26,13 +26,15 @@ The formula in §1 still risks a genuinely new store (zero reviews yet, boost no
 
 ## 3. What Discovery Actually Shows
 
+All of Discovery — homepage, category pages, search, and store profile pages — lives at `discover.cartiphy.com`, per Level 1's app architecture.
+
 - **Products first, marketplace-style** — the discovery homepage, category pages, and search results are primarily grids of individual products, each showing its store's name and verification badge alongside it. This matches how Nigerian buyers already expect to shop (closer to Jumia/Konga than a directory of shopfronts).
 - **Store profile pages exist separately**, for a buyer who wants to see everything one vendor sells (§4).
 - Ranking (§1) is computed at the **store** level (standing, rating) but applied to surface that store's **products** in listings — a well-standing store's products rank higher than an equivalent product from a poorly-standing store.
 
 ## 4. Store Profile Pages
 
-**These live on cartiphy.com itself — not on the vendor's subdomain.** A store profile page is a Cartiphy-branded summary: logo, About text, verification badge, aggregate rating, and a grid of the vendor's top/all products. It is part of the Discovery surface (per Level 1's page inventory, section B), styled consistently across every vendor regardless of which storefront template they picked.
+**These live on `discover.cartiphy.com` — not on the vendor's subdomain, and not on the marketing site.** A store profile page is a Cartiphy-branded summary: logo, About text, verification badge, aggregate rating, and a grid of the vendor's top/all products. It is part of the Discovery surface (per Level 1's page inventory, section B) and the buyer discovery/account route group defined in Level 1's app architecture, styled consistently across every vendor regardless of which storefront template they picked.
 
 **Why not just link to the vendor's subdomain storefront:** the subdomain storefront is the vendor's own templated experience (Storefront doc §1–§2), which varies in layout by template choice. Discovery needs a single, predictable, Cartiphy-owned page to browse a vendor's full catalog with consistent design — exactly the same logic that keeps checkout and the trust badge Cartiphy-owned inside every template.
 
