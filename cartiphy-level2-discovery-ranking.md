@@ -45,6 +45,9 @@ All of Discovery — homepage, category pages, search, and store profile pages �
 - **Postgres full-text search** across three fields with descending weight: product name (highest), product description, store name.
 - **Relevance-first.** A search for "leather bag" should surface the most textually relevant results first; the rating/standing score from §1 only acts as a **tiebreaker** among results of similar relevance — it never overrides what the buyer actually typed.
 - Category pages use the same underlying ranking as the homepage (§1), scoped to that category.
+- **Typo tolerance:** exact full-text matches always rank first. When a query returns few or no full-text results (below a small threshold tuned at build time), the search falls back to trigram similarity (Postgres `pg_trgm`) on product name and store name, so a misspelling like "lether bag" still finds leather bags. A short synonym list (e.g. "sneakers"/"trainers", "phone"/"mobile") can be maintained as a settings-editable table, added when real search data shows which ones matter.
+- **No dead-end "no results" page:** when nothing matches even after fuzzy fallback, show a warm-voiced message plus the category list and the "New on Cartiphy" products, so the buyer always has somewhere to go.
+- Fuzzy fallback never overrides relevance: a fuzzy match ranks below any exact match.
 
 ## 6. Eligibility
 
@@ -63,6 +66,8 @@ Beyond what's already listed in Level 1 §6:
 - `store_ranking_snapshots` (new) — periodic computed score per store (bayesian_rating, vendor_standing_factor, recency_boost, final score, computed_at), so ranking has an explainable history rather than only a live, opaque number — useful for admin review if a vendor ever disputes their ranking.
 - `stores.new_store_boost_expires_at` — marks when a store's `recency_boost` will have fully decayed, used to compute §1's multiplier.
 - Search relies on Postgres's built-in full-text search (`tsvector`/`tsquery`) on `products.name`, `products.description`, and `stores.name` — no separate search index/service needed at this scale.
+- `pg_trgm` extension enabled, with trigram indexes on `products.name` and `stores.name`, for the typo-tolerant fallback in §5.
+- `search_synonyms` (optional, added when needed) — term, equivalent terms, editable in the settings editor.
 
 ## 9. Checkpoint Test Script
 
@@ -73,6 +78,9 @@ Beyond what's already listed in Level 1 §6:
 5. A single-product store with no reviews yet is still visible in its category page once Tier 1+ verified and live.
 6. A `suspended` store's products and store profile page immediately disappear from discovery, search, and category pages.
 7. Tapping a product on a store's Discovery profile page correctly routes to that product's real page on the vendor's own subdomain, where checkout takes over.
+8. A search for a deliberately misspelled product name ("lether bag") returns the correct product through the fuzzy fallback, and an exact-spelling search still ranks exact matches first.
+9. A search with no possible match shows the warm "no results" page with categories and "New on Cartiphy" products, not an empty page.
+10. A fuzzy-matched result never outranks an exact match for the same query.
 
 ---
 

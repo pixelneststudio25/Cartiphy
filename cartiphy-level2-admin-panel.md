@@ -26,6 +26,7 @@ Reads against `cartiphy-level-1-master-plan.md`, `cartiphy-level2-payments.md`, 
 - `case_notes` — internal comments, any admin role.
 - Each case links back to its origin (a specific order, vendor, buyer, or flag source) and forward to its outcome (e.g., a `refund` case resolving links to the actual refund record from the Payments doc).
 - A case list view can be filtered by `case_type`, so a refund-focused Finance-role admin and a moderation-focused Moderator-role admin can each see only what's relevant to them, without needing separate tables.
+- **Image-scan hits** (OCR finding a phone number or off-platform instruction inside an uploaded image — see `cartiphy-level2-vendor-content-tools.md` §4) create `risk_flag` cases here, with the flagged image and matched pattern attached to the case. They flag for review rather than blocking the upload.
 
 ---
 
@@ -62,6 +63,9 @@ Level 1 lists a long wishlist of things that could be admin-editable. Building a
 - Dispute window, auto-confirm window, fulfillment SLA window (the timing values from the Order Lifecycle doc)
 - Category list
 - Reserved subdomain blocklist
+- AI generation allowances per plan (`plan_entitlements` rows)
+- Template library metadata (active flag, plan tier, tags) — templates themselves are code; only their metadata is editable here
+- Cartiphy Image Library (add/retire/tag images, OG backgrounds)
 
 **Edited directly via Supabase's own table editor for now** (rarer, more technical, or not yet well-understood enough to build a polished UI around):
 - Content-scanner rule patterns/phrases
@@ -108,6 +112,8 @@ Beyond what's already listed in Level 1 §6 and §7:
 - `verification_reviews.match_confidence` — records what triggered auto-approval vs. manual review for Tier 1.
 - `settings_history` — already listed in Level 1 §7; applies uniformly whether a setting was changed via the built editor or directly in Supabase.
 - `data_reveal_log` (new, or a `reveal` action type within `audit_log`) — records every masked-field reveal.
+- `image_scan_results` and `ai_generation_log` (defined in the Vendor Content Tools doc §5) — readable by Moderator and above for flagged-image review and AI abuse review respectively.
+- `library_images` and `templates` (Template Library doc §9) — metadata editable via the settings editor.
 
 ---
 
@@ -121,6 +127,8 @@ Beyond what's already listed in Level 1 §6 and §7:
 6. The global kill switch, pulled by Super Admin, stops checkout on every store; a per-store pause, pulled by a Moderator, stops only that one store.
 7. A customer's phone number is masked by default in the admin panel; clicking reveal shows the real number and logs the reveal with admin identity and timestamp.
 8. A setting changed via the built editor (e.g., trial length) and a value changed directly in Supabase (e.g., a risk threshold) both correctly appear in `settings_history`.
+9. An uploaded image containing a phone number creates a `risk_flag` case with the image and matched text attached; a Moderator can review and resolve it from the normal case list.
+10. Retiring a template (`is_active = false`) removes it from the vendor picker without breaking stores already using it; a change to a plan's AI allowance takes effect via `plan_entitlements` and appears in `settings_history`.
 
 ---
 

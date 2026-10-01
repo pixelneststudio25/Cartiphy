@@ -63,7 +63,7 @@ Exactly four things beyond the product catalog, per your decision:
 
 **WhatsApp number is a required onboarding field**, not optional — it's core to how buyers reach vendors pre-purchase (§6) and is used again post-payment for delivery coordination (per Level 1 §2).
 
-Nothing else — no custom colors, no custom sections, no theme variables exposed to vendors at launch. Template variety comes from Cartiphy's own template library (3–5 at launch), not from per-vendor tweaking.
+Nothing else — no custom colors, no custom sections, no theme variables exposed to vendors at launch. Template variety comes from Cartiphy's own template library (15 at launch; see `cartiphy-level2-template-library.md`), not from per-vendor tweaking.
 
 ---
 
@@ -114,6 +114,7 @@ This creates the lightweight guest `customers` record referenced in Level 1 §1 
 - **Multi-product stores** with products spanning more than one of the platform's fixed categories (Level 1 §2) get a simple **category filter** within their own storefront.
 - **Single-product stores** get no filter and no grid at all — there is exactly one product to show, so the storefront is effectively a single product-detail page functioning as the store's homepage.
 - **No full-text search within a single store** at launch — this is deliberately deferred to keep Phase 2 light. It's a safe thing to add later without restructuring the template engine, since it doesn't touch the data model or checkout flow at all.
+- **Sort and price filter** for multi-product stores are in scope at launch — see §17.
 
 ---
 
@@ -121,6 +122,7 @@ This creates the lightweight guest `customers` record referenced in Level 1 §1 
 
 - Because rendering is server-side (§3), each product and store page can carry accurate Open Graph tags (title, description, image) reflecting real content — not a generic placeholder.
 - A shared-link preview (e.g., a buyer pasting a product link into WhatsApp) should show the product's actual name, price, and image — this only works because the HTML is complete on first response, which is the entire reason server-rendering was chosen over client-side rendering in Level 1.
+- **The full spec for OG images (1200×630, 300KB cap, library plus dynamic compositing), favicons, structured data, sitemap and canonicals lives in `cartiphy-level2-vendor-content-tools.md` §1.** This section only establishes that server-rendering makes them possible.
 
 ---
 
@@ -154,10 +156,46 @@ Beyond what's already listed in Level 1 §6 and the Order Lifecycle doc:
 - `stores.template_switched_at`, `stores.template_switch_count_30d` — needed to enforce the §2 cadence limit.
 - `carts.last_activity_at` — needed to compute the 24-hour abandoned threshold and the 30-day purge.
 - `customer_addresses` (already listed in Level 1 §6) — for guest checkout, this can simply be a freeform text field tied to the order rather than a separate structured table entry, per §8. A structured `customer_addresses` table is more relevant for registered buyers who might reuse an address across orders.
+- `products.details` — optional jsonb list of label/value pairs, max 8 (§15).
+- `policy_versions` (already listed in Level 1 §6/§7) — versions the standard store policy page (§16).
+- Template metadata additions (tags, affinity, font pairing) are defined in the Template Library doc §9.
 
 ---
 
-## 15. Checkpoint Test Script
+## 15. Product Page Requirements and Structured Details
+
+- **Gallery:** every image a product has (1 to 10, per plan) is shown in a swipeable gallery with **tap/click-to-zoom** (pinch-zoom on phones). Multiple angles are encouraged through the product form's copy, not forced.
+- **Structured details:** `products.details` is an optional list of label/value pairs (materials, size or dimensions, care instructions, what's included). Maximum 8 pairs; label up to 30 characters, value up to 200; text only. Because products have no variant system, size guidance and similar information lives here. Details pass through the content-scanner like any other vendor text, are editable in the dashboard, and can be drafted with the AI tool (Vendor Content Tools doc §2).
+- **Delivery fee shown on the product page** next to the price (see §17).
+- Every template must implement all of this; the exact anatomy is in the Template Library doc §4.
+
+---
+
+## 16. Store Policy Page
+
+- **A standard, Cartiphy-owned policy page on every store** (`/policies` on the store's subdomain), identical in content across all stores and linked from the footer, product pages, cart and checkout. Vendors cannot edit or add to it, which keeps the four-field customization rule intact.
+- Content covers: how delivery works (vendor-arranged off-platform, flat fee set by the vendor, shown before checkout); returns and refunds (a buyer can raise a dispute within 7 days of confirming delivery, outcome is a full refund or a rejection, no partial refunds); how payment works (through Cartiphy's checkout only); and when the vendor's full contact details are revealed (after payment).
+- **It must not promise "buyer protection" or guaranteed refunds** (Level 1 §5) — only describe the real process.
+- Wording is versioned in `policy_versions`; the lawyer review happens in the post-launch compliance phase (Level 1 §12).
+- Vendor-specific return terms are a possible Phase 10 addition, not launch scope.
+
+---
+
+## 17. Sorting, Price Filter and Cost Transparency
+
+**Multi-product stores**
+- **Sort:** Featured (vendor's order, then newest — the default), Newest, Price low-to-high, Price high-to-low.
+- **Optional price filter** (min/max), combinable with the category filter in §10.
+- The default server-rendered view works without JavaScript; sort and filter controls enhance it.
+
+**Cost transparency**
+- The flat delivery fee appears on the product page (e.g. "+ ₦1,500 delivery"), so no cost first appears at checkout.
+- The cart shows **subtotal, delivery fee and total** before the buyer proceeds, and the checkout total always equals the cart total.
+- Single-product stores skip the cart view via Buy Now, but the first step of checkout shows the same breakdown, and the product page already shows the fee.
+
+---
+
+## 18. Checkpoint Test Script
 
 1. A vendor with no coding ability can fully set up a store (logo, banner, About text, WhatsApp number, products) using only dashboard fields — no code entry point exists anywhere in the flow.
 2. Visiting a `draft` store's subdomain shows the "coming soon" page; visiting a `suspended` store shows the neutral unavailable page; neither shows a 404 or leaks internal status.
@@ -169,7 +207,12 @@ Beyond what's already listed in Level 1 §6 and the Order Lifecycle doc:
 8. A product page's shared link renders an accurate preview (name, price, image) when pasted into WhatsApp — confirming server-side rendering is genuinely working, not just configured.
 9. Guest checkout completes with phone + freeform address only, no email; a registered buyer logs in via phone OTP and completes checkout with saved details.
 10. An "Ask a question" tap opens WhatsApp with the correct product pre-filled, and is recorded as a `chat_tap` event with the correct source (`discovery` vs `direct`).
+11. A product with 1 image and a product with 10 images both show a working gallery with tap-to-zoom on a phone-width screen.
+12. Any two stores show identical content on `/policies`, linked from the footer, product page and checkout; the page contains no "buyer protection" or guaranteed-refund wording.
+13. Sort and price filter work on a multi-product store, combine correctly with the category filter, and the default view still renders with JavaScript disabled.
+14. The delivery fee is visible on the product page; the cart's total equals the checkout total; a single-product Buy Now shows the full breakdown on the first checkout step.
+15. A product's `details` pairs render on the product page; a 9th pair is rejected; a phone number inside a detail value is caught by the content-scanner.
 
 ---
 
-*This document supersedes any earlier informal notes on storefront and cart behavior. Read alongside `cartiphy-level-1-master-plan.md`, `cartiphy-level2-payments.md`, and `cartiphy-level2-order-lifecycle.md`. Next Level 2 document: Admin Panel detail.*
+*This document supersedes any earlier informal notes on storefront and cart behavior. Read alongside `cartiphy-level-1-master-plan.md`, `cartiphy-level2-payments.md`, and `cartiphy-level2-order-lifecycle.md`. Next Level 2 document: Admin Panel detail. Updated to reference `cartiphy-level2-template-library.md` and `cartiphy-level2-vendor-content-tools.md`.*

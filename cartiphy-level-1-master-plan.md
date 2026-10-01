@@ -45,8 +45,14 @@ Cartiphy is a Nigeria-first ecommerce store-builder platform. Vendors self-serve
 | Discovery | Platform-wide; only Tier 1+ verified vendors surfaced; ranking = verified + rated, blended with newest as cold-start fill; no pay-to-rank |
 | WhatsApp | Pre-purchase: "Ask a question" button (Add to Cart / Buy Now stays the primary CTA). Full vendor contact revealed to buyer after payment |
 | Categories (v1) | Fashion & Apparel · Beauty & Personal Care · Food & Groceries · Electronics & Gadgets · Home & Living · Health & Wellness · Kids & Baby · Jewelry & Accessories · Arts, Crafts & Handmade · Other |
-| Templates | 3–5 commerce-ready templates at launch, chosen by vendor via a style questionnaire (AI-assisted selection deferred until the library reaches ~15–20 templates) |
-| Template design rules | Platform surfaces follow `design.md`. Checkout, order confirmation, and the trust badge are Cartiphy-owned components embedded inside every template, regardless of the vendor's chosen style |
+| Templates | **15 commerce-ready templates at launch**, growing toward **100 long-term** (Phase 10), chosen by vendor via a style questionnaire and filterable by category affinity and style tag. Templates are independent of category (affinity is advisory). AI-assisted selection deferred until the library outgrows the questionnaire. Full rules in `cartiphy-level2-template-library.md` |
+| Template design rules | Platform surfaces follow `design.md`. Checkout, order confirmation, and the trust badge are Cartiphy-owned components embedded inside every template, regardless of the vendor's chosen style, and always render in Clash Display / Inter. Vendor-styled areas use one of 15 bound heading+body font pairings per template |
+| Responsive breakpoints | ≤380px · 381–480px · 481–768px · 769–1024px · 1025px+ (mobile-first) |
+| Link previews | OG image 1200×630, hard cap 300KB. Vendors pick from a Cartiphy OG background library or upload their own; Cloudinary composites product photo, name, price at request time (no AI). Details in `cartiphy-level2-vendor-content-tools.md` |
+| AI copy | DeepSeek V4 Flash via OpenRouter, server-side only, never auto-published, allowance gated by plan entitlements |
+| Cartiphy Image Library | Unsplash and Pexels only, curated by the owner; Pinterest is inspiration only, never an image source |
+| Image scanning | OCR on uploaded images for the same patterns as the text content-scanner; flags into the admin case queue rather than blocking |
+| Store policies | One standard, Cartiphy-owned policy page on every store; vendors cannot edit it |
 | Vendor dashboard / buyer account visuals | Sleek.design is **dropped**. Visual references are produced with ChatGPT image generation and handed to Codex as design reference to build from directly in code |
 | Compliance groundwork | Lawyer review, NDPA privacy policy, CAC considerations, etc. are addressed **after** the product is live, not before launch |
 
@@ -63,7 +69,8 @@ Plans: **Prime** (free) · **Venture** · **Apex**. Annual billing = 10 months' 
 | Products | 25 | 250 | Unlimited |
 | Images per product | 3 | 6 | 10 |
 | Bulk CSV upload | No | Yes | Yes |
-| Templates | 3 core | All | All + early access |
+| Templates | 3 core (which three: open item) | All | All + early access |
+| AI copy generations | Small monthly allowance (TBD) | Larger allowance (TBD) | Largest allowance (TBD) |
 | "Sold on Cartiphy" footer badge | Shown | Removable | Removable |
 | Buyer discount codes | No | Unlimited | Unlimited + automatic discounts |
 | Abandoned carts | Count only | List + click-to-chat WhatsApp link | + automated recovery (later) |
@@ -121,6 +128,8 @@ Never gated by plan: verification, reviews, dispute handling, buyer confirmation
 
 **Prevent first:** saving a listing with contact/bank details or off-platform phrases shows a friendly block with a fix. Only repeated attempts count against the vendor.
 
+**Images too:** uploaded images are OCR-scanned for the same patterns. Image hits flag into the admin queue rather than blocking the upload (see Vendor Content Tools doc §4). AI-generated copy is scanned exactly like typed text.
+
 **Automatic flags** (probabilistic, never proof) → nightly job → admin queue:
 content-scanner hits · buyer reports · chat-tap-to-order ratio vs. platform median (minimum sample size) · sudden order drop with steady traffic/taps.
 
@@ -142,7 +151,7 @@ content-scanner hits · buyer reports · chat-tap-to-order ratio vs. platform me
 ## 6. Data Model (by domain — DDL is a Level 2 task)
 
 - **Identity:** `vendors`, `customers` (is_guest flag), `admin_users`, `tos_acceptances`, `blocklist` (bank account hash, phone)
-- **Stores and catalog:** `stores` (store_type, subdomain, category, template_id, status, standing), `store_settings`, `products`, `product_images`, `templates`
+- **Stores and catalog:** `stores` (store_type, subdomain, category, template_id, status, standing), `store_settings`, `products` (including structured `details`), `product_images`, `templates`, `library_images`, `image_scan_results`, `ai_generation_log`
 - **Commerce:** `carts`, `cart_items`, `orders`, `order_items`, `order_status_history`, `customer_addresses`, `discount_codes`
 - **Payments:** `payments`, `webhook_events`, `refunds`
 - **Trust:** `reviews`, `disputes`, `reports`, `risk_flags`, `enforcement_actions`, `appeals`
@@ -208,7 +217,7 @@ Vendor auth (email + phone), ToS/Marketplace Rules acceptance gate. Onboarding w
 **Checkpoint:** vendor signs up, creates a store, adds products, sees the live subdomain.
 
 ### Phase 2 — Storefront rendering and cart
-Template engine (server-side placeholder filling); commerce slots: product grid, product detail, cart, checkout shell, confirmation. `platform.js` SDK; server-side cart via cookie. Single-product "Buy Now" path reusing the same cart infrastructure. 3–5 commerce-ready templates; SEO and OG tags per store. Event tracking (view, cart_add, chat_tap, source); "Ask a question" WhatsApp button; footer badge gating. Guest capture (email/phone → lightweight customer record).
+Template engine (server-side placeholder filling); commerce slots: product grid, product detail, cart, checkout shell, confirmation. `platform.js` SDK; server-side cart via cookie. Single-product "Buy Now" path reusing the same cart infrastructure. Template engine supports the 15 launch templates: the first three ship with this phase's checkpoint and the remaining twelve are built as a parallel template track before launch (see Template Library doc §10). SEO, OG and structured data per store (see Vendor Content Tools doc §1). Standard store policy page; product gallery with zoom; sort and price filters; upfront delivery fee and total. Event tracking (view, cart_add, chat_tap, source); "Ask a question" WhatsApp button; footer badge gating. Guest capture (email/phone → lightweight customer record).
 **Checkpoint:** buyer browses a real store, cart survives refresh, events recorded, link preview renders correctly for both store types.
 
 ### Phase 3 — Payments (highest risk; use the strongest model here)
@@ -216,7 +225,7 @@ Tier 1 verification: bank account name-match and phone OTP; sub-account creation
 **Checkpoint:** sandbox payment → webhook → order → stock decrement → vendor sees order in dashboard; duplicate webhook is harmless; concurrent last-item purchase test passes.
 
 ### Phase 4 — Order lifecycle and trust mechanics
-Status machine with history: Placed → Confirmed → Out for Delivery → Awaiting Confirmation → Delivered / Disputed / Cancelled. Tokenized buyer confirmation link, 72h auto-confirm; vendor contact reveal after payment. Disputes (7-day window, 5-day auto-flag), vendor-initiated full refunds via Flutterwave. Verified-purchase reviews and rating aggregation; vendor standing indicator. Bank-account-change flow (re-verification, logging, 24–48h hold).
+Status machine with history: Placed → Confirmed → Out for Delivery → Delivered / Cancelled (disputes are tracked as cases on a Delivered order, not as an order status — see the Order Lifecycle doc). Tokenized buyer confirmation link, 72h auto-confirm; vendor contact reveal after payment. Disputes (7-day window, 5-day auto-flag), vendor-initiated full refunds via Flutterwave. Verified-purchase reviews and rating aggregation; vendor standing indicator. Bank-account-change flow (re-verification, logging, 24–48h hold).
 **Checkpoint:** full happy path, disputed path, auto-confirm path, and a bank-change event all run correctly end to end.
 
 ### Phase 5 — Notifications
@@ -240,7 +249,7 @@ Lawyer review of vendor terms and Marketplace Rules; NDPA privacy policy; confir
 *(Per §2, the compliance/legal groundwork itself is scheduled to begin after the product is functionally live — this phase's legal items should be read as "start once live," not "block launch on.")*
 
 ### Phase 10 — Post-launch backlog
-Custom domains, staff accounts, automated cart recovery, zone-based delivery fees, AI template selection, dark mode, Services category, multi-store owners, escrow (only after Flutterwave/legal clarity), expanded template library, Apex commission cap (if data supports it), partial refunds (if needed).
+Custom domains, staff accounts, automated cart recovery, zone-based delivery fees, AI template selection, dark mode, Services category, multi-store owners, escrow (only after Flutterwave/legal clarity), expanded template library (toward 100 templates), Apex commission cap (if data supports it), partial refunds (if needed).
 
 ---
 
@@ -284,7 +293,8 @@ Custom domains, staff accounts, automated cart recovery, zone-based delivery fee
 - Monthly SMS/WhatsApp allowances for Venture and Apex; exact analytics metric definitions; support-response targets.
 - Enforcement thresholds (chat-tap ratio, minimum sample sizes) — tune after real data exists.
 - Detailed DDL and RLS policies per table; per-phase task card breakdown and prompts.
-- Style questionnaire content (what it asks, how it maps to template choice).
+- Style questionnaire content (what it asks, how it maps to style tags across the 15 launch templates).
+- Which three templates are the Prime "3 core" templates; monthly AI generation allowances per plan; final 15 font pairings and launch roster confirmation (Template Library doc §14).
 - Data retention and deletion periods (set with a lawyer once legal groundwork begins).
 
 ---
